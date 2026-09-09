@@ -1,471 +1,875 @@
-# Cyber Incident Response Simulator
+# 🛡️ Cyber Incident Simulator
 
-## Siber Olay Müdahale Simülatörü
+> **A modular, security-focused Cyber Incident Response & SIEM Simulation Platform built with Rust.**
 
-A comprehensive cyber incident response training platform for SOC analysts and security professionals. This simulator provides realistic attack scenarios to practice incident detection, investigation, containment, and recovery procedures.
+Cyber Incident Simulator is a **realistic cybersecurity training and incident-response simulation platform** designed to reproduce security incidents, generate and process security events, detect malicious activity, investigate incidents, perform response actions, and evaluate analyst performance.
 
-## 🎯 Features
+The platform combines **SIEM-style detection**, **MITRE ATT&CK-based attack scenarios**, **incident response workflows**, **digital evidence management**, **real-time monitoring**, and **performance scoring** into a single modular environment.
 
-### Core Capabilities
-- **Realistic Attack Scenarios**: 12+ scenarios ranging from beginner to expert level
-- **MITRE ATT&CK Integration**: All events mapped to MITRE techniques for educational value
-- **Real-time Detection Engine**: Rule-based detection with correlation capabilities
-- **Incident Management**: Complete incident lifecycle management (detect → contain → eradicate → recover)
-- **Investigation Tools**: Timeline analysis, evidence collection, and attack chain reconstruction
-- **Response Playbook**: Predefined response actions and execution tracking
-- **Scoring System**: Performance evaluation with detailed metrics and rankings
-- **Interactive Dashboard**: Real-time monitoring and incident response interface
-
-### Attack Categories
-- **Authentication Attacks**: Brute force, credential stuffing, phishing
-- **Malware**: Ransomware, trojans, spyware
-- **Network Attacks**: Lateral movement, data exfiltration, command & control
-- **Web Application Attacks**: SQL injection, XSS, CSRF
-- **Advanced Threats**: APT simulation, custom campaigns, multi-stage attacks
-
-### Difficulty Levels
-- **Beginner**: Simple attacks with clear indicators (10-15 min)
-- **Intermediate**: Multi-vector attacks requiring correlation (15-20 min)
-- **Advanced**: Sophisticated attacks with evasion techniques (20-30 min)
-- **Expert**: APT-level attacks with complex decision-making (30-45 min)
-
-## 🏗️ Architecture
-
-### Technology Stack
-- **Backend**: Rust with Axum web framework
-- **Database**: SQLite with rusqlite
-- **Frontend**: Vanilla JavaScript with modern CSS
-- **Async Runtime**: Tokio
-- **Serialization**: Serde
-
-### System Components
-```
-Frontend (JavaScript) → API Layer (Axum) → Business Logic → Database (SQLite)
-                      ↓                    ↓
-                 REST API            Detection Engine
-                                    Incident Manager
-                                    Investigation Engine
-                                    Response Engine
-                                    Scoring Engine
-```
-
-### Key Modules
-- **API Layer**: RESTful endpoints for all operations
-- **Detection Engine**: Event analysis and alert generation
-- **Incident Manager**: Incident lifecycle management
-- **Investigation Engine**: Timeline building and evidence collection
-- **Response Engine**: Action execution and tracking
-- **Scoring Engine**: Performance evaluation and ranking
-- **Simulation Engine**: Event generation and scenario execution
-
-## 🚀 Quick Start
-
-### Prerequisites
-- Rust 1.70 or higher
-- Node.js 16+ (for frontend development, optional)
-- Git
-
-### Installation
-
-1. **Clone the repository**
-```bash
-git clone <repository-url>
-cd "Siber Olay Müdahale Simülatörü"
-```
-
-2. **Install Rust dependencies**
-```bash
-cargo build --release
-```
-
-3. **Run the simulator**
-```bash
-cargo run --release
-```
-
-4. **Access the dashboard**
-Open your browser and navigate to: `http://localhost:8080`
-
-### Docker Deployment
-
-1. **Build the Docker image**
-```bash
-docker build -t cyber-incident-simulator .
-```
-
-2. **Run with Docker Compose**
-```bash
-docker-compose up -d
-```
-
-3. **Access the dashboard**
-Open your browser and navigate to: `http://localhost:8080`
-
-## 📖 Usage
-
-### Starting a Training Session
-
-1. **Navigate to the Scenarios page**
-   - Click "Scenarios" in the sidebar
-   - Browse available scenarios by difficulty level
-
-2. **Select a scenario**
-   - Click on a scenario card to view details
-   - Review the objective and expected actions
-   - Click "Start Scenario" when ready
-
-3. **Enter your analyst name**
-   - Provide your name for session tracking
-   - Click "Launch Scenario" to begin
-
-### During a Session
-
-1. **Monitor Live Events**
-   - View real-time security events in the dashboard
-   - Filter events by source, type, or malicious activity
-   - Analyze event patterns and correlations
-
-2. **Review Alerts**
-   - Check alerts generated by the detection engine
-   - Acknowledge and investigate high-priority alerts
-   - Update alert status as you investigate
-
-3. **Create Incidents**
-   - Create incidents for significant security events
-   - Track incident lifecycle through containment, eradication, and recovery
-   - Document your investigation findings
-
-4. **Investigate**
-   - Build attack timeline from events
-   - Collect evidence automatically or manually
-   - Analyze attack chains and MITRE techniques
-
-5. **Respond**
-   - Execute response actions from the playbook
-   - Isolate hosts, block IPs, disable accounts
-   - Track action success and impact
-
-6. **Finalize and Score**
-   - Click "Finalize & Score" when complete
-   - Review your performance metrics
-   - See your ranking and improvement areas
-
-### Scoring System
-
-The simulator evaluates your performance across four dimensions:
-
-- **Detection Score (25%)**: Alert detection accuracy and speed
-- **Investigation Score (25%)**: Thoroughness and evidence collection
-- **Containment Score (25%)**: Effectiveness of containment actions
-- **Recovery Score (25%)**: System restoration and validation
-
-**Ranking System:**
-- **Platinum (95-100)**: Expert level
-- **Gold (85-94)**: Senior level
-- **Silver (70-84)**: Intermediate level
-- **Bronze (50-69)**: Junior level
-- **Unranked (<50)**: Training needed
-
-## 📚 Documentation
-
-### Available Documentation
-- **[API Documentation](docs/api.md)**: Complete API reference
-- **[Architecture Documentation](docs/architecture.md)**: System design and components
-- **[Database Documentation](docs/database.md)**: Database schema and operations
-- **[Incident Response Documentation](docs/incident-response.md)**: Response procedures
-- **[Scenarios Documentation](docs/scenarios.md)**: Available scenarios and creation
-- **[Threat Model Documentation](docs/threat-model.md)**: Threat actors and attack vectors
-
-### Configuration
-
-Configuration files are located in the `config/` directory:
-
-- **simulator.toml**: Main configuration (server, database, simulation settings)
-- **detection_rules.toml**: Detection rule definitions
-- **scoring.toml**: Scoring system configuration
-
-Example configuration:
-```toml
-[server]
-host = "127.0.0.1"
-port = 8080
-static_dir = "fronted"
-
-[database]
-path = "data/simulator.db"
-
-[simulation]
-tick_interval_ms = 2000
-max_events_per_tick = 8
-scenario_dir = "scenarios"
-
-[scoring]
-detection_weight = 0.25
-investigation_weight = 0.25
-containment_weight = 0.25
-recovery_weight = 0.25
-time_penalty_factor = 0.005
-```
-
-## 🧪 Testing
-
-### Running Tests
-
-```bash
-# Run all tests
-cargo test
-
-# Run integration tests
-cargo test --test integration
-
-# Run scenario tests
-cargo test --test scenarios
-
-# Run with output
-cargo test -- --nocapture
-```
-
-### Test Coverage
-
-The project includes comprehensive test coverage:
-- **Integration Tests**: Detection flow, incident flow, investigation flow, response flow
-- **Unit Tests**: Detection rules, incident management, scoring system
-- **Scenario Tests**: Brute force, phishing, ransomware scenarios
-- **Validation Tests**: Scenario validation, event validation, MITRE mapping
-
-## 🛠️ Development
-
-### Project Structure
-```
-siber-olay-mudahale-simulator/
-├── src/                    # Rust source code
-│   ├── api/               # API layer
-│   ├── attack/            # MITRE ATT&CK integration
-│   ├── config/            # Configuration management
-│   ├── database/          # Database operations
-│   ├── detection/         # Detection engine
-│   ├── incident/          # Incident management
-│   ├── investigation/     # Investigation tools
-│   ├── logging/           # Log generation
-│   ├── models/            # Data models
-│   ├── response/          # Response engine
-│   ├── scenarios/         # Scenario system
-│   ├── scoring/           # Scoring system
-│   ├── simulation/        # Simulation engine
-│   └── utils/             # Utility functions
-├── fronted/               # Frontend files
-│   ├── css/              # Stylesheets
-│   ├── js/               # JavaScript modules
-│   └── index.html        # Main HTML file
-├── config/                # Configuration files
-├── scenarios/             # Attack scenarios
-│   ├── beginner/
-│   ├── intermediate/
-│   ├── advanced/
-│   └── expert/
-├── data/                  # Data files
-│   ├── generated/
-│   └── seed/
-├── logs/                  # Log files
-│   ├── generated/
-│   └── samples/
-├── docs/                  # Documentation
-├── tests/                 # Test files
-├── scripts/               # Utility scripts
-└── Cargo.toml            # Rust dependencies
-```
-
-### Adding New Scenarios
-
-1. **Create scenario JSON file** in the appropriate difficulty directory
-2. **Define scenario metadata** (id, name, difficulty, category, description, objective)
-3. **Add events** with proper timing, sources, and MITRE mapping
-4. **Specify expected actions** for scoring
-5. **Add optional hints** for analysts
-6. **Test the scenario** using the scenario loader
-
-Example scenario structure:
-```json
-{
-  "id": "custom_scenario",
-  "name": "Custom Attack",
-  "difficulty": "intermediate",
-  "category": "network",
-  "description": "Description of the attack",
-  "objective": "Learning objective",
-  "time_limit_secs": 900,
-  "events": [...],
-  "expected_actions": [...],
-  "hints": [...]
-}
-```
-
-### Adding Detection Rules
-
-1. **Edit config/detection_rules.toml**
-2. **Define rule properties** (id, name, description, severity, MITRE technique)
-3. **Specify detection conditions**
-4. **Test the rule** with sample events
-
-Example rule:
-```toml
-[[rules]]
-id = "custom_rule"
-name = "Custom Detection Rule"
-description = "Detects custom attack pattern"
-severity = "high"
-enabled = true
-mitre_technique = "T1110"
-
-[[rules.conditions]]
-field = "event_type"
-operator = "equals"
-value = "login_attempt"
-
-[[rules.conditions]]
-field = "source_ip"
-operator = "in"
-value = ["192.168.1.100", "10.0.0.50"]
-```
-
-## 🔒 Security Considerations
-
-### Current Security Model
-- **No Authentication**: Intentional for training environment
-- **Local Deployment**: Designed for single-machine use
-- **SQLite Database**: File-based storage
-- **No Encryption**: Data stored in plain text
-
-### Production Recommendations
-- **Add Authentication**: Implement OAuth, JWT, or similar
-- **Add Authorization**: Role-based access control
-- **Use PostgreSQL/MySQL**: Enterprise-grade database
-- **Implement TLS/HTTPS**: Secure communications
-- **Add Rate Limiting**: Prevent abuse
-- **Audit Logging**: Track all user actions
-- **Input Validation**: Sanitize all user inputs
-- **Regular Updates**: Keep dependencies updated
-
-## 🤝 Contributing
-
-### How to Contribute
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-### Contribution Guidelines
-- Follow Rust coding conventions
-- Add tests for new features
-- Update documentation
-- Ensure all tests pass
-- Use meaningful commit messages
-
-### Areas for Contribution
-- **New Scenarios**: Create additional attack scenarios
-- **Detection Rules**: Improve detection capabilities
-- **UI Improvements**: Enhance the frontend interface
-- **Documentation**: Improve existing documentation
-- **Performance**: Optimize database queries and algorithms
-- **Security**: Add security features
-
-## 📊 Performance
-
-### Optimization Features
-- **Database Indexing**: Strategic indexes on frequently queried columns
-- **Connection Pooling**: Efficient database connection management
-- **Batch Operations**: Bulk database operations where possible
-- **Query Optimization**: Optimized SQL queries
-- **Response Caching**: Session and scenario caching
-
-### Benchmarks
-- **Event Generation**: ~1000 events/second
-- **Detection Analysis**: ~500 events/second
-- **Database Queries**: <10ms for typical queries
-- **API Response Time**: <50ms for most endpoints
-- **Memory Usage**: ~100MB for typical session
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-**Database Locked Error**
-- Ensure only one instance is running
-- Check for long-running transactions
-- Restart the application
-
-**Port Already in Use**
-- Change port in config/simulator.toml
-- Kill process using port 8080
-- Use a different port
-
-**Scenario Not Loading**
-- Verify scenario file format
-- Check scenario directory path
-- Validate JSON syntax
-- Check file permissions
-
-**Memory Issues**
-- Increase system memory limits
-- Reduce max_events_per_tick in config
-- Clear old sessions from database
-- Use in-memory database for testing
-
-### Debug Mode
-
-Enable debug logging:
-```bash
-RUST_LOG=debug cargo run
-```
-
-## 📈 Roadmap
-
-### Planned Features
-- [ ] WebSocket support for real-time updates
-- [ ] Multiplayer scenarios
-- [ ] AI-powered scenario generation
-- [ ] Integration with real SIEM systems
-- [ ] Mobile responsive design
-- [ ] Advanced reporting and analytics
-- [ ] Team collaboration features
-- [ ] Custom scenario editor
-- [ ] Speech recognition for voice commands
-- [ ] VR/AR training environment
-
-### Technical Improvements
-- [ ] Migration to PostgreSQL for production
-- [ ] Redis for session management
-- [ ] Message queue for event processing
-- [ ] Advanced caching layer
-- [ ] Performance monitoring dashboard
-- [ ] Automated backup and recovery
-- [ ] Data archiving for old sessions
-
-## 📝 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🙏 Acknowledgments
-
-- **MITRE ATT&CK Framework**: For the comprehensive threat model
-- **Rust Community**: For excellent tools and libraries
-- **Axum Framework**: For the amazing web framework
-- **Security Community**: For incident response best practices
-
-## 📞 Support
-
-For support, questions, or contributions:
-- Open an issue on GitHub
-- Check the documentation in the `docs/` directory
-- Review existing issues and discussions
-
-## 🌟 Star History
-
-If you find this project useful, please consider giving it a star on GitHub!
+It is designed to provide a controlled environment where security analysts, students, developers, and cybersecurity enthusiasts can practice the complete lifecycle of handling a cyber incident.
 
 ---
 
-**Built with ❤️ for the cybersecurity community**
+## 🚀 Overview
 
-*Cyber Incident Response Simulator - Training the next generation of SOC analysts*
+Modern cybersecurity requires more than simply detecting an attack.
+
+A security analyst must be able to:
+
+* Identify suspicious activity
+* Correlate security events
+* Determine the severity of an incident
+* Investigate affected systems
+* Collect and analyze evidence
+* Contain the threat
+* Perform eradication and recovery
+* Document the incident
+* Evaluate the response
+
+Cyber Incident Simulator models this workflow as an interactive simulation.
+
+```text
+┌─────────────────────────────────────────────────────────────┐
+│                    CYBER INCIDENT SIMULATOR                 │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  Attack Scenario                                            │
+│       │                                                     │
+│       ▼                                                     │
+│  Event / Log Generation                                     │
+│       │                                                     │
+│       ▼                                                     │
+│  Detection & Correlation Engine                             │
+│       │                                                     │
+│       ▼                                                     │
+│  Alert Generation                                           │
+│       │                                                     │
+│       ▼                                                     │
+│  Incident Management                                        │
+│       │                                                     │
+│       ▼                                                     │
+│  Investigation & Evidence                                   │
+│       │                                                     │
+│       ▼                                                     │
+│  Response / Containment / Recovery                          │
+│       │                                                     │
+│       ▼                                                     │
+│  Scoring & Performance Evaluation                           │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+# ✨ Key Features
+
+## 🔴 Cyber Attack Simulation
+
+The simulator provides multiple attack and incident scenarios representing realistic adversarial behavior.
+
+Supported scenario categories include:
+
+* Brute Force
+* Password Spraying
+* Phishing
+* Malware
+* Ransomware
+* SQL Injection
+* Data Exfiltration
+* Web Attacks
+* Credential Theft
+* Lateral Movement
+* Privilege Escalation
+* PowerShell Activity
+* Command & Control
+* DNS Tunneling
+* Insider Threat
+* Web Shell Activity
+* Multi-stage Attack Campaigns
+* APT-style simulations
+
+Scenarios can be organized according to difficulty and attack progression.
+
+---
+
+# 🧠 MITRE ATT&CK Integration
+
+The simulator uses the **MITRE ATT&CK framework** to model adversarial behavior.
+
+Attack scenarios are mapped to ATT&CK tactics and techniques, allowing simulated incidents to represent realistic attack chains.
+
+### ATT&CK tactic coverage includes:
+
+* Reconnaissance
+* Resource Development
+* Initial Access
+* Execution
+* Persistence
+* Privilege Escalation
+* Defense Evasion
+* Credential Access
+* Discovery
+* Lateral Movement
+* Collection
+* Command and Control
+* Exfiltration
+* Impact
+
+This allows incidents to be analyzed not only as isolated alerts, but as parts of a larger adversary campaign.
+
+---
+
+# 🔎 Detection Engine
+
+The detection layer acts as the core of the simulated security monitoring environment.
+
+It processes generated security events and applies detection rules to identify suspicious behavior.
+
+### Detection capabilities
+
+* Rule-based detection
+* Event correlation
+* IOC analysis
+* Severity classification
+* MITRE technique mapping
+* Alert generation
+* Rule enable/disable management
+* Multi-event detection
+* Suspicious activity identification
+
+The detection pipeline is designed around the same conceptual workflow used by modern security monitoring systems:
+
+```text
+Security Event
+      │
+      ▼
+Event Parser
+      │
+      ▼
+Detection Rules
+      │
+      ▼
+Correlation Engine
+      │
+      ▼
+IOC Analysis
+      │
+      ▼
+Severity Classification
+      │
+      ▼
+Security Alert
+```
+
+---
+
+# 🚨 Incident Response
+
+Detected threats can be transformed into structured incidents and managed through an incident-response lifecycle.
+
+The system models the major phases of incident handling:
+
+```text
+Detection
+   ↓
+Investigation
+   ↓
+Containment
+   ↓
+Eradication
+   ↓
+Recovery
+   ↓
+Resolution
+```
+
+Response actions can be tracked and associated with the affected incident.
+
+This makes the simulator useful not only for detection practice, but also for **full incident-response training**.
+
+---
+
+# 🔬 Investigation & Digital Evidence
+
+The investigation subsystem provides a structured environment for analyzing incidents.
+
+Capabilities include:
+
+* Evidence collection
+* Evidence tracking
+* Incident timelines
+* Event investigation
+* Investigation queries
+* Evidence metadata
+* Timeline reconstruction
+* Incident history
+
+The goal is to simulate the process of answering questions such as:
+
+> What happened?
+
+> When did it happen?
+
+> Which system was affected?
+
+> How did the attacker gain access?
+
+> What actions were performed?
+
+> What evidence supports the conclusion?
+
+---
+
+# 📊 Analyst Scoring System
+
+Cyber Incident Simulator evaluates the analyst's incident-response performance using a structured scoring model.
+
+The scoring system considers four major response areas:
+
+| Category      | Weight |
+| ------------- | -----: |
+| Detection     |    25% |
+| Investigation |    25% |
+| Containment   |    25% |
+| Recovery      |    25% |
+
+Additional factors such as response time can influence the final score.
+
+This creates a training environment where analysts are not simply asked to **find an alert**, but are evaluated on their ability to manage the entire incident lifecycle.
+
+---
+
+# 👥 Role-Based Access Control
+
+The platform includes role-based access control.
+
+### Admin
+
+Full system access including management and administrative operations.
+
+### Analyst
+
+Designed for security analysts investigating and responding to incidents.
+
+### Trainee
+
+Designed for cybersecurity training and simulation exercises.
+
+The role system allows different users to interact with the platform according to their responsibilities.
+
+---
+
+# 🔐 Security Architecture
+
+Security is treated as a core component of the platform rather than an additional feature.
+
+Implemented security mechanisms include:
+
+* Argon2id password hashing
+* TOTP-based multi-factor authentication
+* HMAC-SHA1 for TOTP verification
+* SHA-256 hashing
+* IP lockdown
+* Brute-force protection
+* Path traversal protection
+* XSS protection
+* Content Security Policy
+* `X-Content-Type-Options`
+* `X-Frame-Options`
+* HSTS
+* CORS controls
+* Input validation
+* Session management
+* Role-based authorization
+
+The application also follows a defense-in-depth approach across the API, authentication, data access, and frontend layers.
+
+---
+
+# ⚡ Real-Time Monitoring
+
+The platform supports real-time communication between the backend and frontend.
+
+Real-time functionality is used for:
+
+* Security events
+* Alerts
+* Incident updates
+* Simulation state
+* Dashboard information
+* Live monitoring
+
+Supported communication mechanisms include:
+
+* WebSocket
+* Server-Sent Events
+* UDP Syslog
+
+---
+
+# 📡 Syslog Support
+
+The simulator includes a UDP-based Syslog listener designed around standard Syslog message formats.
+
+Supported concepts include:
+
+* RFC 3164
+* RFC 5424
+* UDP log ingestion
+* Log parsing
+* Security event generation
+
+Default Syslog port:
+
+```text
+5140/UDP
+```
+
+This allows external log generators and security tools to feed simulated security events into the platform.
+
+---
+
+# 🏗️ Architecture
+
+The project follows a modular Rust architecture.
+
+```text
+src/
+├── api/
+│   ├── handlers
+│   ├── middleware
+│   ├── routes
+│   └── websocket
+│
+├── attack/
+│   ├── MITRE integration
+│   ├── procedures
+│   ├── tactics
+│   └── techniques
+│
+├── audit/
+│   ├── attack auditing
+│   ├── scanner
+│   └── reports
+│
+├── config/
+│   ├── environment
+│   ├── loader
+│   └── settings
+│
+├── database/
+│   ├── connection
+│   ├── queries
+│   └── repository
+│
+├── detection/
+│   ├── correlation
+│   ├── engine
+│   ├── IOC
+│   ├── rules
+│   └── severity
+│
+├── incident/
+│   ├── lifecycle
+│   ├── incident manager
+│   └── state
+│
+├── investigation/
+│   ├── engine
+│   ├── evidence
+│   ├── queries
+│   └── timeline
+│
+├── logging/
+│   ├── formatter
+│   ├── generator
+│   ├── logger
+│   ├── parser
+│   └── Syslog
+│
+├── response/
+│   ├── actions
+│   ├── containment
+│   ├── eradication
+│   ├── recovery
+│   └── response engine
+│
+├── scenarios/
+│   ├── generator
+│   ├── loader
+│   └── scenario models
+│
+├── scoring/
+│   ├── engine
+│   ├── metrics
+│   └── ranking
+│
+├── simulation/
+│   ├── clock
+│   ├── engine
+│   ├── session
+│   └── state
+│
+└── utils/
+    ├── IDs
+    ├── security
+    ├── time
+    └── validation
+```
+
+---
+
+# 🗄️ Database
+
+The application uses **SQLite** for persistence.
+
+Core entities include:
+
+* Users
+* Sessions
+* Events
+* Alerts
+* Incidents
+* Evidence
+* Response Actions
+* Scores
+* Assets
+* Banned IP Addresses
+
+Conceptually:
+
+```text
+Users
+  │
+  └── Sessions
+        │
+        ▼
+      Events
+        │
+        ▼
+      Alerts
+        │
+        ▼
+    Incidents
+      ├── Evidence
+      ├── Timeline
+      └── Response Actions
+              │
+              ▼
+            Score
+```
+
+---
+
+# 🦀 Technology Stack
+
+## Backend
+
+* **Rust 2021**
+* **Axum 0.7**
+* **Tokio**
+* **SQLite**
+* **rusqlite**
+* **Argon2**
+* **HMAC**
+* **SHA-256**
+* **TOTP / RFC 6238**
+* **Tracing**
+
+## Frontend
+
+* HTML5
+* CSS3
+* Vanilla JavaScript
+* ES6 Modules
+* WebSocket
+* Server-Sent Events
+
+No frontend framework is required.
+
+---
+
+# 🐳 Containerization
+
+The project includes Docker support for reproducible deployment.
+
+Included:
+
+* Multi-stage Docker build
+* Non-root application user
+* Docker Compose
+* Persistent storage
+* Health checks
+* API/Web interface
+* Syslog listener
+
+Default exposed services:
+
+```text
+Web / API
+8080/TCP
+
+Syslog
+5140/UDP
+```
+
+---
+
+# 🔄 CI / Security Automation
+
+The repository includes GitHub Actions workflows for automated project checks.
+
+The CI/security workflow covers areas such as:
+
+* Rust compilation
+* Testing
+* Clippy analysis
+* Dependency auditing
+* Security-oriented checks
+
+This helps maintain a repeatable development and validation workflow.
+
+---
+
+# 📁 Project Structure
+
+```text
+Cyber Incident Simulator/
+│
+├── .github/
+├── config/
+├── data/
+├── docs/
+├── fronted/
+├── migrations/
+├── scenarios/
+├── scripts/
+├── src/
+├── tests/
+│
+├── Cargo.toml
+├── Cargo.lock
+├── Dockerfile
+├── docker-compose.yml
+├── LICENSE
+└── README.md
+```
+
+---
+
+# ⚙️ Getting Started
+
+## Requirements
+
+Recommended environment:
+
+* Rust
+* Cargo
+* SQLite
+* Docker / Docker Compose (optional)
+
+---
+
+## Clone
+
+```bash
+git clone https://github.com/YOUR_USERNAME/cyber-incident-simulator.git
+cd cyber-incident-simulator
+```
+
+---
+
+## Configure
+
+Create your environment configuration from the provided example:
+
+```bash
+cp .env.example .env
+```
+
+Adjust the configuration according to your environment.
+
+---
+
+## Build
+
+```bash
+cargo build
+```
+
+---
+
+## Run
+
+```bash
+cargo run
+```
+
+The application will start the backend and expose the configured web/API services.
+
+---
+
+# 🐳 Docker
+
+Build and start the complete environment with:
+
+```bash
+docker compose up --build
+```
+
+Run in detached mode:
+
+```bash
+docker compose up -d --build
+```
+
+Stop the environment:
+
+```bash
+docker compose down
+```
+
+---
+
+# 🧪 Testing
+
+Run the complete Rust test suite:
+
+```bash
+cargo test
+```
+
+Run a specific integration test:
+
+```bash
+cargo test --test e2e_flow
+```
+
+Run tests with output:
+
+```bash
+cargo test -- --nocapture
+```
+
+---
+
+# 🎯 Training Workflow
+
+A typical training session can follow this workflow:
+
+### 1. Select a Scenario
+
+Choose an incident scenario based on difficulty or attack type.
+
+### 2. Start Simulation
+
+The simulator generates security activity representing the selected attack.
+
+### 3. Monitor Events
+
+Observe incoming events and suspicious activity through the monitoring interface.
+
+### 4. Analyze Alerts
+
+Review generated alerts and determine their severity.
+
+### 5. Investigate
+
+Analyze:
+
+* Events
+* Timeline
+* Assets
+* Evidence
+* Attack techniques
+
+### 6. Contain
+
+Perform appropriate containment actions.
+
+### 7. Recover
+
+Complete recovery actions and return affected systems to a stable state.
+
+### 8. Review Score
+
+The system evaluates the analyst's overall incident-response performance.
+
+---
+
+# 🧩 Example Attack Chain
+
+A multi-stage simulated attack can look like:
+
+```text
+Initial Access
+      │
+      ▼
+Credential Access
+      │
+      ▼
+Execution
+      │
+      ▼
+Privilege Escalation
+      │
+      ▼
+Lateral Movement
+      │
+      ▼
+Collection
+      │
+      ▼
+Command & Control
+      │
+      ▼
+Exfiltration
+      │
+      ▼
+Impact
+```
+
+The detection and investigation layers allow the analyst to reconstruct this progression from security events and alerts.
+
+---
+
+# 🛡️ Security Philosophy
+
+The project is built around a simple principle:
+
+> **Detection is only the beginning of incident response.**
+
+A capable security platform should connect:
+
+```text
+Telemetry
+   ↓
+Detection
+   ↓
+Correlation
+   ↓
+Investigation
+   ↓
+Evidence
+   ↓
+Response
+   ↓
+Recovery
+   ↓
+Evaluation
+```
+
+Cyber Incident Simulator is designed around this complete lifecycle.
+
+---
+
+# 📚 Documentation
+
+Additional technical documentation is available in the `docs/` directory.
+
+Documentation includes:
+
+* API documentation
+* System architecture
+* Database design
+* Incident response workflow
+* Scenario system
+* Threat model
+
+---
+
+# 🎓 Who Is This For?
+
+Cyber Incident Simulator can be useful for:
+
+* Cybersecurity students
+* SOC analyst trainees
+* Security researchers
+* Software engineers learning cybersecurity
+* Blue team practitioners
+* Incident responders
+* Cybersecurity educators
+* Developers interested in security engineering
+
+---
+
+# 💡 Why Rust?
+
+Rust was selected for the backend because it provides:
+
+* Memory safety
+* Strong type safety
+* High performance
+* Predictable resource usage
+* Excellent concurrency primitives
+* Reliable error handling
+* Strong ecosystem for network services
+
+For a security-oriented simulation platform, these properties provide a strong foundation for building reliable backend components.
+
+---
+
+# 📌 Project Goals
+
+The primary goals of Cyber Incident Simulator are:
+
+* Build a realistic incident-response environment
+* Model real-world attack behavior
+* Integrate MITRE ATT&CK concepts
+* Provide security event detection
+* Enable structured incident investigation
+* Simulate containment and recovery
+* Evaluate analyst performance
+* Provide a modular cybersecurity architecture
+* Demonstrate secure Rust backend engineering
+
+---
+
+# 🏆 Project Highlights
+
+| Area             | Capability                                         |
+| ---------------- | -------------------------------------------------- |
+| Backend          | Rust + Axum + Tokio                                |
+| Database         | SQLite                                             |
+| Detection        | Rules + Correlation + IOC                          |
+| Attack Framework | MITRE ATT&CK                                       |
+| Authentication   | Argon2id + TOTP                                    |
+| Authorization    | RBAC                                               |
+| Logging          | Structured logging + Syslog                        |
+| Real-Time        | WebSocket + SSE                                    |
+| Investigation    | Evidence + Timeline                                |
+| Response         | Containment + Eradication + Recovery               |
+| Scoring          | Detection + Investigation + Containment + Recovery |
+| Deployment       | Docker + Docker Compose                            |
+| Automation       | GitHub Actions                                     |
+| Frontend         | HTML + CSS + Vanilla JS                            |
+
+---
+
+# 📜 License
+
+This project is licensed under the **MIT License**.
+
+See [`LICENSE`](LICENSE) for the full license text.
+
+---
+
+# 👨‍💻 About the Project
+
+Cyber Incident Simulator is a personal cybersecurity engineering project focused on combining:
+
+**Software Engineering + Cybersecurity + Incident Response + Simulation + Security Architecture**
+
+The project is built with the goal of creating a practical environment where cybersecurity concepts can be transformed into an interactive technical system rather than remaining purely theoretical.
+
+---
+
+<p align="center">
+
+### 🛡️ Detect. Investigate. Contain. Recover.
+
+**Cyber Incident Simulator**
+
+Built with ❤️ and Rust.
+
+</p>
