@@ -1,0 +1,66 @@
+{
+  "id": "mitre-execution-05",
+  "name": "Kullanıcı Yürütme — Sahte Yazılım",
+  "difficulty": "beginner",
+  "category": "execution",
+  "mitre_tactic": "TA0002",
+  "mitre_tactic_name": "Execution",
+  "description": "Kullanıcı sahte yazılım güncellemesini çalıştırıyor.",
+  "objective": "Bu Kullanıcı Yürütme — Sahte Yazılım senaryosunda saldırıyı tespit edin, MITRE tekniği T1204.002 ile ilişkilendirin ve müdahale edin.",
+  "time_limit_secs": 1800,
+  "scenario_type": "user_execution",
+  "target_hosts": [
+    "web-prod-01",
+    "dc-server-01",
+    "file-server-01"
+  ],
+  "attacker_ips": [
+    "185.234.218.42",
+    "45.142.212.100",
+    "103.219.189.55"
+  ],
+  "events": [
+    {
+      "offset_secs": 5,
+      "source": "endpoint",
+      "event_type": "file_download",
+      "message": "User downloaded ChromeUpdate.exe from http://185.234.218.42/update",
+      "host": "workstation-HR-01",
+      "source_ip": "185.234.218.42",
+      "destination_ip": null,
+      "user": "jsmith",
+      "is_malicious": true,
+      "mitre_technique": "T1204.002"
+    },
+    {
+      "offset_secs": 15,
+      "source": "endpoint",
+      "event_type": "process_create",
+      "message": "ChromeUpdate.exe executed — not signed, hash matches known malware",
+      "host": "workstation-HR-01",
+      "source_ip": null,
+      "destination_ip": null,
+      "user": "jsmith",
+      "is_malicious": true,
+      "mitre_technique": "T1204.002"
+    }
+  ],
+  "expected_actions": [
+    "acknowledge",
+    "investigate",
+    "contain",
+    "block_ip"
+  ],
+  "hints": [
+    "MITRE Tekniği: T1204.002",
+    "Taktik: TA0002",
+    "Olay zaman çizelgesini inceleyin",
+    "Kaynak IP'leri engellemeyi değerlendirin"
+  ],
+  "scoring": {
+    "detect_alert_bonus": 10,
+    "investigate_bonus": 8,
+    "contain_bonus": 12,
+    "speed_bonus_threshold_secs": 300
+  }
+}

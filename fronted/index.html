@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Cyber Incident Response Simulator — Interactive SOC training platform for security analysts" />
+  <title>CyberSim — SOC Incident Response Simulator</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/incident.css" />
+  <link rel="stylesheet" href="css/investigation.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════
+     SIDEBAR NAVIGATION
+════════════════════════════════════════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <path d="M14 2L3 7v7c0 5.5 4.7 10.7 11 12 6.3-1.3 11-6.5 11-12V7L14 2z" fill="url(#shield-grad)" stroke="rgba(99,102,241,0.4)" stroke-width="0.5"/>
+        <path d="M9 14l3 3 7-7" stroke="#a5b4fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <defs>
+          <linearGradient id="shield-grad" x1="3" y1="2" x2="25" y2="28" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#4f46e5"/>
+            <stop offset="1" stop-color="#7c3aed"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+    <div class="logo-text">
+      <span class="logo-title">CyberSim</span>
+      <span class="logo-sub">SOC Simulator</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <button class="nav-item active" data-view="dashboard" id="nav-dashboard" title="Dashboard">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+        <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+      </svg>
+      <span>Dashboard</span>
+    </button>
+    <button class="nav-item" data-view="scenarios" id="nav-scenarios" title="Scenarios">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="12" y2="17"/>
+      </svg>
+      <span>Scenarios</span>
+    </button>
+    <button class="nav-item" data-view="events" id="nav-events" title="Live Events">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+      </svg>
+      <span>Live Events</span>
+      <span class="nav-badge" id="events-badge">0</span>
+    </button>
+    <button class="nav-item" data-view="alerts" id="nav-alerts" title="Alerts">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+      </svg>
+      <span>Alerts</span>
+      <span class="nav-badge alert-badge" id="alerts-badge">0</span>
+    </button>
+    <button class="nav-item" data-view="incidents" id="nav-incidents" title="Incidents">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      <span>Incidents</span>
+    </button>
+    <button class="nav-item" data-view="investigation" id="nav-investigation" title="Investigation">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <span>Investigation</span>
+    </button>
+    <button class="nav-item" data-view="response" id="nav-response" title="Response">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      </svg>
+      <span>Response</span>
+    </button>
+    <button class="nav-item" data-view="scoring" id="nav-scoring" title="Scoring">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+        <polyline points="17 6 23 6 23 12"/>
+      </svg>
+      <span>Scoring</span>
+    </button>
+    <button class="nav-item" data-view="scenario-editor" id="nav-scenario-editor" title="Scenario Editor">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+      </svg>
+      <span>Görsel Editör</span>
+    </button>
+    <button class="nav-item" data-view="self-audit" id="nav-self-audit" title="Self-Audit">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        <path d="M9 12l2 2 4-4"/>
+      </svg>
+      <span>Self-Audit</span>
+    </button>
+  </nav>
+
+  <div class="sidebar-session" id="session-info">
+    <div class="session-empty" id="session-empty-state">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="32" height="32">
+        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/>
+        <line x1="8" y1="12" x2="16" y2="12"/>
+      </svg>
+      <p>No active session</p>
+      <button class="btn-start-mini" onclick="app.showView('scenarios')">Start Training</button>
+    </div>
+    <div class="session-active hidden" id="session-active-state">
+      <div class="session-label">Active Session</div>
+      <div class="session-scenario" id="session-scenario-name">—</div>
+      <div class="session-timer-wrapper">
+        <span class="session-timer-label">Elapsed</span>
+        <span class="session-timer" id="session-timer">00:00</span>
+      </div>
+      <button class="btn-finish-session" id="btn-finish-session">Finalize &amp; Score</button>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══════════════════════════════════════════════
+     MAIN CONTENT
+════════════════════════════════════════════════ -->
+<main class="main-content" id="main-content">
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <h1 class="page-title" id="page-title">SOC Dashboard</h1>
+      <span class="page-sub" id="page-sub">Security Operations Center</span>
+    </div>
+    <div class="topbar-right">
+      <div class="threat-level" id="threat-level-indicator">
+        <span class="threat-dot"></span>
+        <span class="threat-label" id="threat-level-text">NOMINAL</span>
+      </div>
+      <div class="topbar-clock" id="topbar-clock"></div>
+    </div>
+  </header>
+
+  <!-- NOTIFICATION BANNER -->
+  <div class="notification-banner hidden" id="notification-banner">
+    <span id="notification-text"></span>
+    <button onclick="document.getElementById('notification-banner').classList.add('hidden')">✕</button>
+  </div>
+
+  <!-- ── VIEWS ──────────────────────────────── -->
+
+  <!-- DASHBOARD VIEW -->
+  <section class="view active" id="view-dashboard">
+    <div class="metric-grid" id="metric-grid">
+      <div class="metric-card" id="metric-events">
+        <div class="metric-icon events-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <div class="metric-body">
+          <div class="metric-value" id="metric-events-value">0</div>
+          <div class="metric-label">Security Events</div>
+        </div>
+      </div>
+      <div class="metric-card" id="metric-alerts">
+        <div class="metric-icon alerts-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        </div>
+        <div class="metric-body">
+          <div class="metric-value" id="metric-alerts-value">0</div>
+          <div class="metric-label">Active Alerts</div>
+        </div>
+      </div>
+      <div class="metric-card" id="metric-incidents">
+        <div class="metric-icon incidents-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <div class="metric-body">
+          <div class="metric-value" id="metric-incidents-value">0</div>
+          <div class="metric-label">Open Incidents</div>
+        </div>
+      </div>
+      <div class="metric-card" id="metric-score">
+        <div class="metric-icon score-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
+        </div>
+        <div class="metric-body">
+          <div class="metric-value" id="metric-score-value">—</div>
+          <div class="metric-label">Current Score</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dashboard-grid">
+      <div class="dash-panel" id="panel-feed">
+        <div class="panel-header">
+          <h2 class="panel-title">Live Event Feed</h2>
+          <span class="panel-badge" id="feed-count">0 events</span>
+        </div>
+        <div class="event-feed" id="event-feed">
+          <div class="feed-empty">
+            <p>Start a scenario to see live security events</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-panel" id="panel-alerts-summary">
+        <div class="panel-header">
+          <h2 class="panel-title">Alert Summary</h2>
+          <button class="panel-action" onclick="app.showView('alerts')">View All →</button>
+        </div>
+        <div id="alerts-summary-list">
+          <div class="feed-empty"><p>No alerts yet</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCENARIOS VIEW -->
+  <section class="view hidden" id="view-scenarios">
+    <div class="scenarios-header">
+      <p class="scenarios-intro">Select a scenario to begin your incident response training session.</p>
+      <div class="difficulty-filter">
+        <button class="filter-btn active" data-filter="all">Tümü</button>
+        <button class="filter-btn" data-filter="beginner">Beginner</button>
+        <button class="filter-btn" data-filter="intermediate">Intermediate</button>
+        <button class="filter-btn" data-filter="advanced">Advanced</button>
+        <button class="filter-btn" data-filter="expert">Expert</button>
+        <button class="filter-btn" data-filter="mitre">MITRE ATT&CK</button>
+      </div>
+      <div class="mitre-category-filter hidden" id="mitre-category-filter">
+        <!-- populated dynamically -->
+      </div>
+    </div>
+    <div class="scenario-grid" id="scenario-grid">
+      <div class="loading-spinner">Loading scenarios…</div>
+    </div>
+
+    <!-- Start Session Modal -->
+    <div class="modal-overlay hidden" id="start-modal">
+      <div class="modal">
+        <div class="modal-header">
+          <h2 id="modal-scenario-name">Start Scenario</h2>
+          <button class="modal-close" id="modal-close-btn">✕</button>
+        </div>
+        <div class="modal-body">
+          <p id="modal-scenario-desc"></p>
+          <div class="modal-objective">
+            <strong>Objective:</strong>
+            <p id="modal-scenario-objective"></p>
+          </div>
+          <div class="form-group">
+            <label for="analyst-name-input">Your Analyst Name</label>
+            <input type="text" id="analyst-name-input" placeholder="e.g. J. Smith" maxlength="40" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary" id="modal-cancel-btn">Cancel</button>
+          <button class="btn-primary" id="modal-start-btn">
+            <span>Launch Scenario</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EVENTS VIEW -->
+  <section class="view hidden" id="view-events">
+    <div class="table-toolbar">
+      <input type="text" class="search-input" id="events-search" placeholder="Filter events…" />
+      <select class="select-filter" id="events-source-filter">
+        <option value="">All Sources</option>
+        <option value="authentication">Authentication</option>
+        <option value="firewall">Firewall</option>
+        <option value="endpoint">Endpoint</option>
+        <option value="web_server">Web Server</option>
+        <option value="network">Network</option>
+        <option value="email">Email</option>
+        <option value="dns">DNS</option>
+      </select>
+      <label class="toggle-label">
+        <input type="checkbox" id="malicious-only-toggle" />
+        Malicious only
+      </label>
+    </div>
+    <div class="data-table-wrap">
+      <table class="data-table" id="events-table">
+        <thead>
+          <tr>
+            <th>Timestamp</th><th>Source</th><th>Type</th><th>Host</th><th>IP</th><th>Message</th><th>MITRE</th>
+          </tr>
+        </thead>
+        <tbody id="events-tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ALERTS VIEW -->
+  <section class="view hidden" id="view-alerts">
+    <div class="table-toolbar">
+      <input type="text" class="search-input" id="alerts-search" placeholder="Filter alerts…" />
+      <select class="select-filter" id="alerts-status-filter">
+        <option value="">All Statuses</option>
+        <option value="new">New</option>
+        <option value="acknowledged">Acknowledged</option>
+        <option value="investigating">Investigating</option>
+        <option value="resolved">Resolved</option>
+        <option value="false_positive">False Positive</option>
+      </select>
+    </div>
+    <div class="alerts-list" id="alerts-list">
+      <div class="feed-empty"><p>No alerts for this session</p></div>
+    </div>
+  </section>
+
+  <!-- INCIDENTS VIEW -->
+  <section class="view hidden" id="view-incidents">
+    <div class="incidents-toolbar">
+      <button class="btn-primary btn-sm" id="btn-create-incident">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        New Incident
+      </button>
+    </div>
+    <div class="incidents-layout">
+      <div class="incidents-list-panel" id="incidents-list-panel">
+        <div class="feed-empty"><p>No incidents created yet</p></div>
+      </div>
+      <div class="incident-detail-panel hidden" id="incident-detail-panel">
+        <div id="incident-detail-content"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INVESTIGATION VIEW -->
+  <section class="view hidden" id="view-investigation">
+    <div class="investigation-toolbar">
+      <button class="btn-primary btn-sm" id="btn-collect-evidence">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Auto-Collect Evidence
+      </button>
+    </div>
+    <div class="investigation-layout">
+      <div class="timeline-panel">
+        <h2 class="panel-title">Attack Timeline</h2>
+        <div class="timeline" id="timeline-container">
+          <div class="feed-empty"><p>Start investigating to build the timeline</p></div>
+        </div>
+      </div>
+      <div class="evidence-panel">
+        <h2 class="panel-title">Evidence</h2>
+        <div class="evidence-list" id="evidence-list">
+          <div class="feed-empty"><p>No evidence collected</p></div>
+        </div>
+        <div class="investigation-summary hidden" id="investigation-summary"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESPONSE VIEW -->
+  <section class="view hidden" id="view-response">
+    <div class="response-layout">
+      <div class="response-actions-panel">
+        <h2 class="panel-title">Response Playbook</h2>
+        <div class="response-action-grid" id="response-action-grid">
+          <!-- Action buttons rendered by response.js -->
+        </div>
+      </div>
+      <div class="response-log-panel">
+        <h2 class="panel-title">Action Log</h2>
+        <div class="action-log" id="action-log">
+          <div class="feed-empty"><p>No actions performed yet</p></div>
+        </div>
+      </div>
+    </div>
+    <!-- Action Input Modal -->
+    <div class="modal-overlay hidden" id="action-modal">
+      <div class="modal modal-sm">
+        <div class="modal-header">
+          <h2 id="action-modal-title">Execute Action</h2>
+          <button class="modal-close" id="action-modal-close">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="action-target-input" id="action-target-label">Target</label>
+            <input type="text" id="action-target-input" placeholder="e.g. 10.0.1.5 or hostname" />
+          </div>
+          <div class="form-group">
+            <label for="action-incident-input">Incident ID (optional)</label>
+            <input type="text" id="action-incident-input" placeholder="Link to incident" />
+          </div>
+          <div class="form-group">
+            <label for="action-details-input">Notes</label>
+            <textarea id="action-details-input" rows="2" placeholder="Additional details…"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary" id="action-modal-cancel">Cancel</button>
+          <button class="btn-primary btn-danger" id="action-modal-execute">Execute</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCORING VIEW -->
+  <section class="view hidden" id="view-scoring">
+    <div class="scoring-container" id="scoring-container">
+      <div class="scoring-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="64" height="64" opacity="0.3">
+          <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+          <polyline points="17 6 23 6 23 12"/>
+        </svg>
+        <h2>No Score Yet</h2>
+        <p>Complete a scenario session and click "Finalize &amp; Score" to see your performance report.</p>
+      </div>
+    </div>
+  </section>
+  <!-- SCENARIO EDITOR VIEW -->
+  <section class="view hidden" id="view-scenario-editor">
+    <div id="scenario-editor-container"></div>
+  </section>
+
+  <!-- SELF-AUDIT VIEW -->
+  <section class="view hidden" id="view-self-audit">
+    <div class="audit-header">
+      <p class="scenarios-intro">Proje kendi dosyalarını tarar ve sahte saldırılar ile güvenlik açıklarını test eder.</p>
+      <div class="audit-actions">
+        <button class="btn-primary" id="btn-run-audit">
+          <span>Tam Self-Audit Başlat</span>
+        </button>
+        <button class="btn-secondary" id="btn-quick-audit">Hızlı Kontrol</button>
+      </div>
+      <div id="audit-score-display"></div>
+    </div>
+    <div id="audit-results">
+      <div class="feed-empty">
+        <p>Self-audit henüz çalıştırılmadı. "Tam Self-Audit Başlat" butonuna tıklayın.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- AUTHENTICATION & LOGIN MODAL -->
+<div class="modal-overlay hidden" id="auth-modal" style="display: flex; position: fixed; inset: 0; background: rgba(2, 6, 23, 0.85); backdrop-filter: blur(12px); z-index: 9999; justify-content: center; align-items: center;">
+  <div style="background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(99, 102, 241, 0.4); border-radius: 16px; padding: 32px; width: 100%; max-width: 440px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7); text-align: center;">
+    <div style="width: 56px; height: 56px; background: rgba(99, 102, 241, 0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+      </svg>
+    </div>
+    <h2 style="color: #f8fafc; font-size: 22px; font-weight: 700; margin: 0 0 8px;">Giriş Doğrulama</h2>
+    <p style="color: #94a3b8; font-size: 14px; margin-bottom: 24px;">Siber Olay Müdahale Simülatörü güvenlik erişim kontrolü.</p>
+
+    <form id="auth-login-form" style="display: flex; flex-direction: column; gap: 14px; text-align: left;">
+      <div>
+        <label style="display: block; color: #cbd5e1; font-size: 13px; font-weight: 600; margin-bottom: 6px;">Kullanıcı Adı</label>
+        <input type="text" id="auth-user-input" required style="width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #f8fafc; font-size: 14px;" />
+      </div>
+      <div>
+        <label style="display: block; color: #cbd5e1; font-size: 13px; font-weight: 600; margin-bottom: 6px;">Erişim Şifresi / API Anahtarı</label>
+        <input type="password" id="auth-pass-input" required style="width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #f8fafc; font-size: 14px;" />
+      </div>
+      <div id="auth-totp-container" style="display: none;">
+        <label style="display: block; color: #a5b4fc; font-size: 13px; font-weight: 600; margin-bottom: 6px;">🔑 2FA Doğrulama Kodu (6 Hane)</label>
+        <input type="text" id="auth-totp-input" placeholder="123456" maxlength="6" style="width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid #6366f1; background: #0f172a; color: #38bdf8; font-size: 16px; font-weight: 700; letter-spacing: 4px; text-align: center;" />
+      </div>
+      <button type="submit" style="background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 600; font-size: 15px; cursor: pointer; margin-top: 6px;">
+        Giriş Yap ve Kilidi Aç
+      </button>
+    </form>
+    <div id="auth-error-msg" style="color: #f87171; font-size: 13px; margin-top: 12px; font-weight: 600; min-height: 18px;"></div>
+  </div>
+</div>
+
+<!-- Toast notifications -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- Scripts -->
+<script src="js/api.js"></script>
+<script src="js/scenario_editor.js"></script>
+<script src="js/app.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/incident.js"></script>
+<script src="js/investigation.js"></script>
+<script src="js/response.js"></script>
+<script src="js/audit.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,66 @@
+{
+  "id": "mitre-resource_development-02",
+  "name": "Altyapı Ele Geçirme — Botnet",
+  "difficulty": "intermediate",
+  "category": "resource_development",
+  "mitre_tactic": "TA0042",
+  "mitre_tactic_name": "Resource Development",
+  "description": "Saldırgan ele geçirilmiş botnet altyapısı kullanıyor.",
+  "objective": "Bu Altyapı Ele Geçirme — Botnet senaryosunda saldırıyı tespit edin, MITRE tekniği T1584.005 ile ilişkilendirin ve müdahale edin.",
+  "time_limit_secs": 1800,
+  "scenario_type": "compromise_infrastructure",
+  "target_hosts": [
+    "web-prod-01",
+    "dc-server-01",
+    "file-server-01"
+  ],
+  "attacker_ips": [
+    "185.234.218.42",
+    "45.142.212.100",
+    "103.219.189.55"
+  ],
+  "events": [
+    {
+      "offset_secs": 5,
+      "source": "network",
+      "event_type": "botnet_c2",
+      "message": "Connection to known botnet C2 45.142.212.100 from internal host workstation-ENG-12",
+      "host": "workstation-ENG-12",
+      "source_ip": "45.142.212.100",
+      "destination_ip": null,
+      "user": null,
+      "is_malicious": true,
+      "mitre_technique": "T1584.005"
+    },
+    {
+      "offset_secs": 20,
+      "source": "endpoint",
+      "event_type": "malware_beacon",
+      "message": "Periodic beacon to 45.142.212.100:443 every 60 seconds from workstation-ENG-12",
+      "host": "workstation-ENG-12",
+      "source_ip": "45.142.212.100",
+      "destination_ip": null,
+      "user": null,
+      "is_malicious": true,
+      "mitre_technique": "T1584.005"
+    }
+  ],
+  "expected_actions": [
+    "acknowledge",
+    "investigate",
+    "contain",
+    "block_ip"
+  ],
+  "hints": [
+    "MITRE Tekniği: T1584.005",
+    "Taktik: TA0042",
+    "Olay zaman çizelgesini inceleyin",
+    "Kaynak IP'leri engellemeyi değerlendirin"
+  ],
+  "scoring": {
+    "detect_alert_bonus": 10,
+    "investigate_bonus": 8,
+    "contain_bonus": 12,
+    "speed_bonus_threshold_secs": 300
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "id": "mitre-persistence-04",
+  "name": "Windows Servisi — Kötü Amaçlı SVC",
+  "difficulty": "advanced",
+  "category": "persistence",
+  "mitre_tactic": "TA0003",
+  "mitre_tactic_name": "Persistence",
+  "description": "Saldırgan Windows servisi olarak kalıcılık kuruyor.",
+  "objective": "Bu Windows Servisi — Kötü Amaçlı SVC senaryosunda saldırıyı tespit edin, MITRE tekniği T1543.003 ile ilişkilendirin ve müdahale edin.",
+  "time_limit_secs": 1800,
+  "scenario_type": "service_persistence",
+  "target_hosts": [
+    "web-prod-01",
+    "dc-server-01",
+    "file-server-01"
+  ],
+  "attacker_ips": [
+    "185.234.218.42",
+    "45.142.212.100",
+    "103.219.189.55"
+  ],
+  "events": [
+    {
+      "offset_secs": 10,
+      "source": "endpoint",
+      "event_type": "service_install",
+      "message": "New service installed: 'WindowsDefenderHelper' pointing to C:\\ProgramData\\wdhelper.exe",
+      "host": "file-server-01",
+      "source_ip": null,
+      "destination_ip": null,
+      "user": null,
+      "is_malicious": true,
+      "mitre_technique": "T1543.003"
+    },
+    {
+      "offset_secs": 18,
+      "source": "endpoint",
+      "event_type": "service_start",
+      "message": "Service WindowsDefenderHelper started automatically",
+      "host": "file-server-01",
+      "source_ip": null,
+      "destination_ip": null,
+      "user": null,
+      "is_malicious": true,
+      "mitre_technique": "T1543.003"
+    }
+  ],
+  "expected_actions": [
+    "acknowledge",
+    "investigate",
+    "contain",
+    "block_ip"
+  ],
+  "hints": [
+    "MITRE Tekniği: T1543.003",
+    "Taktik: TA0003",
+    "Olay zaman çizelgesini inceleyin",
+    "Kaynak IP'leri engellemeyi değerlendirin"
+  ],
+  "scoring": {
+    "detect_alert_bonus": 10,
+    "investigate_bonus": 8,
+    "contain_bonus": 12,
+    "speed_bonus_threshold_secs": 300
+  }
+}

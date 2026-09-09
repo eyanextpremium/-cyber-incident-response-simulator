@@ -1,0 +1,21 @@
+# Rust build artifacts
+/target/
+
+# Local Rust toolchain/cache
+/.rustup/
+
+# Environment / secrets
+.env
+
+# Local database
+/data/*.db
+/data/*.db-journal
+
+# Logs
+/logs/
+
+# OS / editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

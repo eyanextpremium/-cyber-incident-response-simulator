@@ -1,0 +1,89 @@
+{
+  "id": "expert-multi-stage-01",
+  "name": "Multi-Stage Attack Chain",
+  "difficulty": "expert",
+  "category": "multi_stage",
+  "description": "A full kill-chain attack: spear-phishing initial access, privilege escalation, lateral movement, ransomware deployment, and simultaneous data exfiltration. Every phase must be detected and responded to correctly.",
+  "objective": "Detect and respond to each phase of the attack chain in real-time. Minimize data loss and system downtime while eradicating all attacker presence.",
+  "time_limit_secs": 7200,
+  "scenario_type": "multi_stage_attack",
+  "target_hosts": ["workstation-HR-01", "dc-server-01", "file-server-01", "db-server-01", "backup-server-01"],
+  "attacker_ips": ["203.0.113.100", "10.0.2.99"],
+  "events": [
+    {
+      "offset_secs": 5,
+      "source": "email",
+      "event_type": "spear_phishing",
+      "message": "Targeted spear-phishing: email from 'CEO@company-corp.net' to hr_director with malicious Word macro attachment",
+      "host": "mail-server-01",
+      "source_ip": "203.0.113.100",
+      "user": "hr_director",
+      "is_malicious": true,
+      "mitre_technique": "T1566.001"
+    },
+    {
+      "offset_secs": 25,
+      "source": "endpoint",
+      "event_type": "macro_execution",
+      "message": "Malicious VBA macro executed in WINWORD.EXE — spawned PowerShell stager",
+      "host": "workstation-HR-01",
+      "user": "hr_director",
+      "is_malicious": true,
+      "mitre_technique": "T1204.002"
+    },
+    {
+      "offset_secs": 40,
+      "source": "endpoint",
+      "event_type": "credential_dump",
+      "message": "LSASS memory dump: sekurlsa::logonpasswords executed — domain credentials extracted",
+      "host": "workstation-HR-01",
+      "user": "hr_director",
+      "is_malicious": true,
+      "mitre_technique": "T1003.001"
+    },
+    {
+      "offset_secs": 60,
+      "source": "network",
+      "event_type": "lateral_movement",
+      "message": "Pass-the-hash lateral movement: workstation-HR-01 -> dc-server-01 using domain admin hash",
+      "host": "dc-server-01",
+      "source_ip": "10.0.2.15",
+      "is_malicious": true,
+      "mitre_technique": "T1550.002"
+    },
+    {
+      "offset_secs": 80,
+      "source": "endpoint",
+      "event_type": "ransomware_deploy",
+      "message": "Ransomware deployed via GPO: domain-wide execution of encrypt.exe across all workstations",
+      "host": "dc-server-01",
+      "user": "SYSTEM",
+      "is_malicious": true,
+      "mitre_technique": "T1486"
+    },
+    {
+      "offset_secs": 85,
+      "source": "firewall",
+      "event_type": "mass_exfil",
+      "message": "Simultaneous exfiltration: 15GB transfer from db-server-01 to 203.0.113.100:443",
+      "host": "db-server-01",
+      "source_ip": "10.0.1.50",
+      "destination_ip": "203.0.113.100",
+      "is_malicious": true,
+      "mitre_technique": "T1048"
+    }
+  ],
+  "expected_actions": ["acknowledge", "investigate", "disable_account", "isolate_host", "block_ip", "contain", "eradicate", "recover"],
+  "hints": [
+    "This is a full kill-chain — each phase requires a different response",
+    "Stop lateral movement to DC first to prevent domain-wide ransomware",
+    "The attacker is exfiltrating simultaneously with the ransomware — prioritize the DB server",
+    "Check GPO for malicious policies deployed by the attacker"
+  ],
+  "scoring": {
+    "detect_alert_bonus": 25,
+    "investigate_bonus": 15,
+    "contain_bonus": 20,
+    "speed_bonus_threshold_secs": 600
+  }
+}

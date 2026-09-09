@@ -1,0 +1,93 @@
+{
+  "id": "beginner-brute-force-01",
+  "name": "SSH Brute Force Attack",
+  "difficulty": "beginner",
+  "category": "authentication",
+  "description": "A threat actor is performing a brute-force attack against the SSH service on a production web server. You will see a series of failed authentication events and need to identify, investigate and contain the threat.",
+  "objective": "Detect the brute force attack, identify the attacker's IP address, and block it before a successful login occurs.",
+  "time_limit_secs": 1800,
+  "scenario_type": "brute_force",
+  "target_hosts": ["web-prod-01", "db-server-01"],
+  "attacker_ips": ["185.234.218.42", "45.142.212.100"],
+  "events": [
+    {
+      "offset_secs": 10,
+      "source": "authentication",
+      "event_type": "login_failure",
+      "message": "Failed password for root from 185.234.218.42 port 52341 ssh2",
+      "host": "web-prod-01",
+      "source_ip": "185.234.218.42",
+      "user": "root",
+      "is_malicious": true,
+      "mitre_technique": "T1110.001"
+    },
+    {
+      "offset_secs": 11,
+      "source": "authentication",
+      "event_type": "login_failure",
+      "message": "Failed password for admin from 185.234.218.42 port 52342 ssh2",
+      "host": "web-prod-01",
+      "source_ip": "185.234.218.42",
+      "user": "admin",
+      "is_malicious": true,
+      "mitre_technique": "T1110.001"
+    },
+    {
+      "offset_secs": 12,
+      "source": "authentication",
+      "event_type": "login_failure",
+      "message": "Failed password for ubuntu from 185.234.218.42 port 52343 ssh2",
+      "host": "web-prod-01",
+      "source_ip": "185.234.218.42",
+      "user": "ubuntu",
+      "is_malicious": true,
+      "mitre_technique": "T1110.001"
+    },
+    {
+      "offset_secs": 20,
+      "source": "firewall",
+      "event_type": "connection_attempt",
+      "message": "ALLOW TCP 185.234.218.42:52341 -> 10.0.1.10:22 (SSH)",
+      "host": "firewall-01",
+      "source_ip": "185.234.218.42",
+      "destination_ip": "10.0.1.10",
+      "is_malicious": true,
+      "mitre_technique": "T1110"
+    },
+    {
+      "offset_secs": 30,
+      "source": "authentication",
+      "event_type": "login_failure",
+      "message": "Failed password for deploy from 185.234.218.42 port 52399 ssh2",
+      "host": "web-prod-01",
+      "source_ip": "185.234.218.42",
+      "user": "deploy",
+      "is_malicious": true,
+      "mitre_technique": "T1110.001"
+    },
+    {
+      "offset_secs": 45,
+      "source": "authentication",
+      "event_type": "login_success",
+      "message": "Accepted password for deploy from 185.234.218.42 port 52400 ssh2",
+      "host": "web-prod-01",
+      "source_ip": "185.234.218.42",
+      "user": "deploy",
+      "is_malicious": true,
+      "mitre_technique": "T1110.001"
+    }
+  ],
+  "expected_actions": ["acknowledge", "investigate", "block_ip", "contain"],
+  "hints": [
+    "Look for repeated failed login attempts from the same IP address",
+    "Check the firewall logs for unusual SSH connection patterns",
+    "The attacker may succeed if you don't act quickly — block the IP!",
+    "Use the 'block_ip' action to prevent further access"
+  ],
+  "scoring": {
+    "detect_alert_bonus": 10,
+    "investigate_bonus": 8,
+    "contain_bonus": 12,
+    "speed_bonus_threshold_secs": 300
+  }
+}

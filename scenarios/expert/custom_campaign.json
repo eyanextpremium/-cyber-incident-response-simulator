@@ -1,0 +1,66 @@
+{
+  "id": "expert-custom-campaign-01",
+  "name": "Custom Threat Campaign",
+  "difficulty": "expert",
+  "category": "custom",
+  "description": "A highly customized attack campaign that combines supply chain compromise, insider threat indicators, and advanced evasion techniques. The attacker has modified legitimate software to include a backdoor.",
+  "objective": "Identify the compromised software, trace the supply chain attack, detect insider threat indicators, and fully remediate the environment.",
+  "time_limit_secs": 7200,
+  "scenario_type": "custom_campaign",
+  "target_hosts": ["build-server-01", "all-workstations", "dc-server-01"],
+  "attacker_ips": ["104.18.22.200"],
+  "events": [
+    {
+      "offset_secs": 10,
+      "source": "endpoint",
+      "event_type": "supply_chain",
+      "message": "Build server: internal tool DevToolsHelper.exe modified — unexpected code changes detected in build pipeline",
+      "host": "build-server-01",
+      "user": "build_service",
+      "is_malicious": true,
+      "mitre_technique": "T1195.002"
+    },
+    {
+      "offset_secs": 30,
+      "source": "network",
+      "event_type": "beacon_all_hosts",
+      "message": "27 workstations beaconing to 104.18.22.200 after deploying DevToolsHelper update — backdoor activated",
+      "host": "all-workstations",
+      "destination_ip": "104.18.22.200",
+      "is_malicious": true,
+      "mitre_technique": "T1071"
+    },
+    {
+      "offset_secs": 50,
+      "source": "authentication",
+      "event_type": "insider_threat",
+      "message": "Employee dev_contractor01 accessed sensitive R&D files outside working hours — possible insider threat or compromised account",
+      "host": "file-server-01",
+      "user": "dev_contractor01",
+      "is_malicious": true,
+      "mitre_technique": "T1078"
+    },
+    {
+      "offset_secs": 70,
+      "source": "endpoint",
+      "event_type": "data_collection",
+      "message": "Automated data collection: DevToolsHelper.exe harvesting browser credentials, SSH keys, and API tokens from all hosts",
+      "host": "all-workstations",
+      "is_malicious": true,
+      "mitre_technique": "T1552.001"
+    }
+  ],
+  "expected_actions": ["acknowledge", "investigate", "quarantine_file", "isolate_host", "disable_account", "eradicate", "recover"],
+  "hints": [
+    "Check the build pipeline for unauthorized code modifications",
+    "A software update that causes mass C2 beaconing is a supply chain attack",
+    "Investigate the contractor account for insider threat or credential compromise",
+    "All systems with the compromised software must be remediated"
+  ],
+  "scoring": {
+    "detect_alert_bonus": 25,
+    "investigate_bonus": 15,
+    "contain_bonus": 20,
+    "speed_bonus_threshold_secs": 2000
+  }
+}

@@ -1,0 +1,44 @@
+name: Security & Audit
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+  schedule:
+    # Run weekly security scan on Mondays at 04:00 UTC
+    - cron: '0 4 * * 1'
+
+jobs:
+  security-audit:
+    name: Security Vulnerability Scan & Clippy Lints
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install Rust Toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+
+      - name: Cache Cargo Dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+
+      - name: Run Clippy Linter
+        run: cargo clippy --all-targets -- -D warnings
+
+      - name: Install Cargo Audit
+        run: cargo install cargo-audit --locked || true
+
+      - name: Run Cargo Audit
+        run: cargo audit

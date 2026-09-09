@@ -1,0 +1,19 @@
+[server]
+host = "127.0.0.1"
+port = 8080
+static_dir = "fronted"
+
+[database]
+path = "data/simulator.db"
+
+[simulation]
+tick_interval_ms = 2000
+max_events_per_tick = 8
+scenario_dir = "scenarios"
+
+[scoring]
+detection_weight = 0.25
+investigation_weight = 0.25
+containment_weight = 0.25
+recovery_weight = 0.25
+time_penalty_factor = 0.005

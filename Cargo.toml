@@ -1,0 +1,97 @@
+[package]
+name = "cyber-incident-simulator"
+version = "0.1.0"
+edition = "2021"
+description = "Cyber Incident Response Simulator - SOC training platform"
+license = "MIT"
+authors = ["SOC Training Team"]
+
+[dependencies]
+axum = { version = "0.7", features = ["macros", "ws"] }
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+rusqlite = { version = "0.31", features = ["bundled"] }
+tower = "0.4"
+tower-http = { version = "0.5", features = ["cors", "fs", "trace"] }
+uuid = { version = "1", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+toml = "0.8"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+thiserror = "1"
+anyhow = "1"
+futures-util = "0.3"
+tokio-stream = { version = "0.1", features = ["sync"] }
+rand = "0.8"
+regex = "1"
+dotenv = "0.15.0"
+argon2 = "0.5"
+base64 = "0.22"
+sha2 = "0.10"
+hmac = "0.12"
+sha1 = "0.10"
+
+[dev-dependencies]
+reqwest = { version = "0.11", features = ["json"] }
+tokio-test = "0.4"
+
+[[test]]
+name = "basic"
+path = "tests/basic_test.rs"
+
+[[test]]
+name = "e2e_flow"
+path = "tests/integration/e2e_flow.rs"
+
+[[test]]
+name = "test_detection"
+path = "tests/integration/test_detection.rs"
+
+[[test]]
+name = "test_incidents"
+path = "tests/integration/test_incidents.rs"
+
+[[test]]
+name = "test_scoring"
+path = "tests/integration/test_scoring.rs"
+
+[[test]]
+name = "detection_flow"
+path = "tests/integration/detection_flow.rs"
+
+[[test]]
+name = "incident_flow"
+path = "tests/integration/incident_flow.rs"
+
+[[test]]
+name = "investigation_flow"
+path = "tests/integration/investigation_flow.rs"
+
+[[test]]
+name = "response_flow"
+path = "tests/integration/response_flow.rs"
+
+[[test]]
+name = "brute_force"
+path = "tests/scenarios/brute_force.rs"
+
+[[test]]
+name = "phishing"
+path = "tests/scenarios/phishing.rs"
+
+[[test]]
+name = "ransomware"
+path = "tests/scenarios/ransomware.rs"
+
+[[test]]
+name = "test_scenario_loader"
+path = "tests/scenarios/test_scenario_loader.rs"
+
+[[bin]]
+name = "cyber-incident-simulator"
+path = "src/main.rs"
+
+[lib]
+name = "cyber_incident_simulator"
+path = "src/lib.rs"

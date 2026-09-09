@@ -1,0 +1,66 @@
+{
+  "id": "mitre-resource_development-01",
+  "name": "Altyapı Edinme — Sahte Domain",
+  "difficulty": "beginner",
+  "category": "resource_development",
+  "mitre_tactic": "TA0042",
+  "mitre_tactic_name": "Resource Development",
+  "description": "Saldırgan hedefi taklit eden sahte domain kaydediyor.",
+  "objective": "Bu Altyapı Edinme — Sahte Domain senaryosunda saldırıyı tespit edin, MITRE tekniği T1583.001 ile ilişkilendirin ve müdahale edin.",
+  "time_limit_secs": 1800,
+  "scenario_type": "acquire_infrastructure",
+  "target_hosts": [
+    "web-prod-01",
+    "dc-server-01",
+    "file-server-01"
+  ],
+  "attacker_ips": [
+    "185.234.218.42",
+    "45.142.212.100",
+    "103.219.189.55"
+  ],
+  "events": [
+    {
+      "offset_secs": 10,
+      "source": "dns",
+      "event_type": "domain_registration",
+      "message": "Newly registered domain targetcorp-login.com (similar to targetcorp.com) — age: 2 days",
+      "host": "firewall-01",
+      "source_ip": "185.234.218.42",
+      "destination_ip": null,
+      "user": null,
+      "is_malicious": true,
+      "mitre_technique": "T1583.001"
+    },
+    {
+      "offset_secs": 30,
+      "source": "email",
+      "event_type": "phishing_prep",
+      "message": "SSL certificate issued for targetcorp-login.com from Let's Encrypt",
+      "host": "mail-server-01",
+      "source_ip": null,
+      "destination_ip": null,
+      "user": null,
+      "is_malicious": true,
+      "mitre_technique": "T1583.001"
+    }
+  ],
+  "expected_actions": [
+    "acknowledge",
+    "investigate",
+    "contain",
+    "block_ip"
+  ],
+  "hints": [
+    "MITRE Tekniği: T1583.001",
+    "Taktik: TA0042",
+    "Olay zaman çizelgesini inceleyin",
+    "Kaynak IP'leri engellemeyi değerlendirin"
+  ],
+  "scoring": {
+    "detect_alert_bonus": 10,
+    "investigate_bonus": 8,
+    "contain_bonus": 12,
+    "speed_bonus_threshold_secs": 300
+  }
+}

@@ -1,0 +1,7 @@
+max_score = 100.0
+detection_points = 25.0
+investigation_points = 25.0
+containment_points = 25.0
+recovery_points = 25.0
+false_positive_penalty = 5.0
+missed_alert_penalty = 10.0

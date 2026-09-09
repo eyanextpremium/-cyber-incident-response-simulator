@@ -1,0 +1,66 @@
+{
+  "id": "mitre-initial_access-04",
+  "name": "Harici Uzaktan Erişim — RDP",
+  "difficulty": "advanced",
+  "category": "initial_access",
+  "mitre_tactic": "TA0001",
+  "mitre_tactic_name": "Initial Access",
+  "description": "Saldırgan internete açık RDP servisine brute force ile giriyor.",
+  "objective": "Bu Harici Uzaktan Erişim — RDP senaryosunda saldırıyı tespit edin, MITRE tekniği T1133 ile ilişkilendirin ve müdahale edin.",
+  "time_limit_secs": 1800,
+  "scenario_type": "external_remote_services",
+  "target_hosts": [
+    "web-prod-01",
+    "dc-server-01",
+    "file-server-01"
+  ],
+  "attacker_ips": [
+    "185.234.218.42",
+    "45.142.212.100",
+    "103.219.189.55"
+  ],
+  "events": [
+    {
+      "offset_secs": 5,
+      "source": "authentication",
+      "event_type": "login_failure",
+      "message": "RDP login failure for Administrator from 185.234.218.42",
+      "host": "workstation-FIN-01",
+      "source_ip": "185.234.218.42",
+      "destination_ip": null,
+      "user": "Administrator",
+      "is_malicious": true,
+      "mitre_technique": "T1133"
+    },
+    {
+      "offset_secs": 60,
+      "source": "authentication",
+      "event_type": "login_success",
+      "message": "RDP login success for svc_backup from 185.234.218.42",
+      "host": "workstation-FIN-01",
+      "source_ip": "185.234.218.42",
+      "destination_ip": null,
+      "user": "svc_backup",
+      "is_malicious": true,
+      "mitre_technique": "T1133"
+    }
+  ],
+  "expected_actions": [
+    "acknowledge",
+    "investigate",
+    "contain",
+    "block_ip"
+  ],
+  "hints": [
+    "MITRE Tekniği: T1133",
+    "Taktik: TA0001",
+    "Olay zaman çizelgesini inceleyin",
+    "Kaynak IP'leri engellemeyi değerlendirin"
+  ],
+  "scoring": {
+    "detect_alert_bonus": 10,
+    "investigate_bonus": 8,
+    "contain_bonus": 12,
+    "speed_bonus_threshold_secs": 300
+  }
+}

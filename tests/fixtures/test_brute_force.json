@@ -1,0 +1,50 @@
+{
+  "id": "test-brute-force-01",
+  "name": "SSH Brute Force Test",
+  "difficulty": "beginner",
+  "category": "brute_force",
+  "description": "Test fixture for integration tests — simulates SSH brute force attack.",
+  "objective": "Detect and block brute force.",
+  "time_limit_secs": 600,
+  "scenario_type": "brute_force",
+  "target_hosts": ["test-server-01"],
+  "attacker_ips": ["10.99.1.1"],
+  "events": [
+    {
+      "offset_secs": 1,
+      "source": "authentication",
+      "event_type": "login_failure",
+      "message": "Failed password for root from 10.99.1.1 port 22 ssh2",
+      "host": "test-server-01",
+      "source_ip": "10.99.1.1",
+      "user": "root",
+      "is_malicious": true,
+      "mitre_technique": "T1110.001"
+    },
+    {
+      "offset_secs": 2,
+      "source": "authentication",
+      "event_type": "login_failure",
+      "message": "Failed password for admin from 10.99.1.1 port 22 ssh2",
+      "host": "test-server-01",
+      "source_ip": "10.99.1.1",
+      "user": "admin",
+      "is_malicious": true,
+      "mitre_technique": "T1110.001"
+    },
+    {
+      "offset_secs": 3,
+      "source": "authentication",
+      "event_type": "login_success",
+      "message": "Accepted password for admin from 10.99.1.1 port 22 ssh2",
+      "host": "test-server-01",
+      "source_ip": "10.99.1.1",
+      "user": "admin",
+      "is_malicious": true,
+      "mitre_technique": "T1110.001"
+    }
+  ],
+  "expected_actions": ["acknowledge", "block_ip"],
+  "hints": ["Test hint"],
+  "scoring": { "detect_alert_bonus": 10, "investigate_bonus": 5, "contain_bonus": 10, "speed_bonus_threshold_secs": 60 }
+}

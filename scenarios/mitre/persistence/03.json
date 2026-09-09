@@ -1,0 +1,66 @@
+{
+  "id": "mitre-persistence-03",
+  "name": "Hesap Oluşturma — Gizli Admin",
+  "difficulty": "advanced",
+  "category": "persistence",
+  "mitre_tactic": "TA0003",
+  "mitre_tactic_name": "Persistence",
+  "description": "Saldırgan gizli yerel admin hesabı oluşturuyor.",
+  "objective": "Bu Hesap Oluşturma — Gizli Admin senaryosunda saldırıyı tespit edin, MITRE tekniği T1136.001 ile ilişkilendirin ve müdahale edin.",
+  "time_limit_secs": 1800,
+  "scenario_type": "create_account",
+  "target_hosts": [
+    "web-prod-01",
+    "dc-server-01",
+    "file-server-01"
+  ],
+  "attacker_ips": [
+    "185.234.218.42",
+    "45.142.212.100",
+    "103.219.189.55"
+  ],
+  "events": [
+    {
+      "offset_secs": 12,
+      "source": "authentication",
+      "event_type": "account_created",
+      "message": "New local account 'support_$' created on dc-server-01",
+      "host": "dc-server-01",
+      "source_ip": null,
+      "destination_ip": null,
+      "user": "admin",
+      "is_malicious": true,
+      "mitre_technique": "T1136.001"
+    },
+    {
+      "offset_secs": 20,
+      "source": "authentication",
+      "event_type": "group_modify",
+      "message": "Account support_$ added to Administrators group",
+      "host": "dc-server-01",
+      "source_ip": null,
+      "destination_ip": null,
+      "user": null,
+      "is_malicious": true,
+      "mitre_technique": "T1136.001"
+    }
+  ],
+  "expected_actions": [
+    "acknowledge",
+    "investigate",
+    "contain",
+    "block_ip"
+  ],
+  "hints": [
+    "MITRE Tekniği: T1136.001",
+    "Taktik: TA0003",
+    "Olay zaman çizelgesini inceleyin",
+    "Kaynak IP'leri engellemeyi değerlendirin"
+  ],
+  "scoring": {
+    "detect_alert_bonus": 10,
+    "investigate_bonus": 8,
+    "contain_bonus": 12,
+    "speed_bonus_threshold_secs": 300
+  }
+}

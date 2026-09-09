@@ -1,0 +1,71 @@
+{
+  "id": "beginner-phishing-01",
+  "name": "Phishing Email Campaign",
+  "difficulty": "beginner",
+  "category": "social_engineering",
+  "description": "An employee received a phishing email impersonating the IT department. The email contains a malicious link that harvests credentials. You must identify the phishing attempt, investigate affected users, and respond appropriately.",
+  "objective": "Identify the phishing email source, find affected users who clicked the link, and disable compromised accounts.",
+  "time_limit_secs": 2400,
+  "scenario_type": "phishing",
+  "target_hosts": ["mail-server-01", "workstation-HR-05"],
+  "attacker_ips": ["198.51.100.22"],
+  "events": [
+    {
+      "offset_secs": 5,
+      "source": "email",
+      "event_type": "email_received",
+      "message": "Suspicious email received: From: it-support@company-update.net Subject: 'Urgent: Password Reset Required' - contains credential harvesting link http://198.51.100.22/login",
+      "host": "mail-server-01",
+      "source_ip": "198.51.100.22",
+      "user": "jsmith@company.com",
+      "is_malicious": true,
+      "mitre_technique": "T1566.001"
+    },
+    {
+      "offset_secs": 35,
+      "source": "web_server",
+      "event_type": "http_request",
+      "message": "HTTP GET http://198.51.100.22/login from 10.0.2.55 - User-Agent: Mozilla/5.0 (user clicked phishing link)",
+      "host": "workstation-HR-05",
+      "source_ip": "10.0.2.55",
+      "destination_ip": "198.51.100.22",
+      "user": "jsmith",
+      "is_malicious": true,
+      "mitre_technique": "T1566.002"
+    },
+    {
+      "offset_secs": 40,
+      "source": "authentication",
+      "event_type": "login_success",
+      "message": "Accepted credentials for jsmith from 198.51.100.22 - possible credential theft replay",
+      "host": "mail-server-01",
+      "source_ip": "198.51.100.22",
+      "user": "jsmith",
+      "is_malicious": true,
+      "mitre_technique": "T1078"
+    },
+    {
+      "offset_secs": 60,
+      "source": "email",
+      "event_type": "email_forwarding",
+      "message": "Suspicious auto-forwarding rule created for jsmith@company.com -> attacker@evil.com",
+      "host": "mail-server-01",
+      "user": "jsmith",
+      "is_malicious": true,
+      "mitre_technique": "T1114.003"
+    }
+  ],
+  "expected_actions": ["acknowledge", "investigate", "disable_account", "contain"],
+  "hints": [
+    "Check the email server logs for messages from suspicious external domains",
+    "Look for users who clicked links in the suspicious email",
+    "After credential theft, attackers often set up email forwarding rules",
+    "Disable the compromised account immediately to prevent further damage"
+  ],
+  "scoring": {
+    "detect_alert_bonus": 10,
+    "investigate_bonus": 10,
+    "contain_bonus": 10,
+    "speed_bonus_threshold_secs": 400
+  }
+}

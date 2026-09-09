@@ -1,0 +1,71 @@
+{
+  "id": "intermediate-lateral-movement-01",
+  "name": "Internal Lateral Movement Campaign",
+  "difficulty": "intermediate",
+  "category": "lateral_movement",
+  "description": "After gaining an initial foothold, an attacker is performing systematic lateral movement through the internal network using valid credentials and WMI/SMB protocols. Multiple hosts are being compromised.",
+  "objective": "Track the attacker's lateral movement path, identify all compromised hosts, and contain the spread before critical infrastructure is reached.",
+  "time_limit_secs": 3000,
+  "scenario_type": "lateral_movement",
+  "target_hosts": ["workstation-HR-02", "file-server-01", "app-server-02", "db-server-01"],
+  "attacker_ips": ["10.0.2.55", "10.0.1.88"],
+  "events": [
+    {
+      "offset_secs": 5,
+      "source": "network",
+      "event_type": "smb_scan",
+      "message": "Internal port scan: 10.0.2.55 scanning TCP/445 (SMB) across subnet 10.0.1.0/24",
+      "host": "workstation-HR-02",
+      "source_ip": "10.0.2.55",
+      "is_malicious": true,
+      "mitre_technique": "T1046"
+    },
+    {
+      "offset_secs": 20,
+      "source": "network",
+      "event_type": "smb_login",
+      "message": "SMB authentication successful: 10.0.2.55 -> file-server-01 (10.0.1.20) using credentials htaylor",
+      "host": "file-server-01",
+      "source_ip": "10.0.2.55",
+      "destination_ip": "10.0.1.20",
+      "user": "htaylor",
+      "is_malicious": true,
+      "mitre_technique": "T1021.002"
+    },
+    {
+      "offset_secs": 35,
+      "source": "endpoint",
+      "event_type": "wmi_execution",
+      "message": "WMI remote process creation: 10.0.2.55 executed cmd.exe on app-server-02 (10.0.1.35)",
+      "host": "app-server-02",
+      "source_ip": "10.0.2.55",
+      "destination_ip": "10.0.1.35",
+      "is_malicious": true,
+      "mitre_technique": "T1047"
+    },
+    {
+      "offset_secs": 55,
+      "source": "network",
+      "event_type": "connection_attempt",
+      "message": "Connection attempt from app-server-02 to db-server-01 (10.0.1.50) on port 1433 (MSSQL)",
+      "host": "db-server-01",
+      "source_ip": "10.0.1.35",
+      "destination_ip": "10.0.1.50",
+      "is_malicious": true,
+      "mitre_technique": "T1021"
+    }
+  ],
+  "expected_actions": ["acknowledge", "investigate", "isolate_host", "block_ip", "contain"],
+  "hints": [
+    "Internal scanning on port 445 often precedes SMB lateral movement",
+    "Track the IP addresses making connections to multiple internal hosts",
+    "WMI is commonly used for remote command execution without needing extra tools",
+    "Isolate each compromised host to stop the spread"
+  ],
+  "scoring": {
+    "detect_alert_bonus": 10,
+    "investigate_bonus": 12,
+    "contain_bonus": 13,
+    "speed_bonus_threshold_secs": 600
+  }
+}

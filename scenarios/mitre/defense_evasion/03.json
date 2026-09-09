@@ -1,0 +1,54 @@
+{
+  "id": "mitre-defense_evasion-03",
+  "name": "Obfuscation — Base64 Encoding",
+  "difficulty": "intermediate",
+  "category": "defense_evasion",
+  "mitre_tactic": "TA0005",
+  "mitre_tactic_name": "Defense Evasion",
+  "description": "Saldırgan base64 ile kod gizliyor.",
+  "objective": "Bu Obfuscation — Base64 Encoding senaryosunda saldırıyı tespit edin, MITRE tekniği T1027 ile ilişkilendirin ve müdahale edin.",
+  "time_limit_secs": 1800,
+  "scenario_type": "obfuscation",
+  "target_hosts": [
+    "web-prod-01",
+    "dc-server-01",
+    "file-server-01"
+  ],
+  "attacker_ips": [
+    "185.234.218.42",
+    "45.142.212.100",
+    "103.219.189.55"
+  ],
+  "events": [
+    {
+      "offset_secs": 10,
+      "source": "endpoint",
+      "event_type": "obfuscated_script",
+      "message": "Highly obfuscated PowerShell script with 5 layers of base64 encoding detected",
+      "host": "workstation-HR-01",
+      "source_ip": null,
+      "destination_ip": null,
+      "user": null,
+      "is_malicious": true,
+      "mitre_technique": "T1027"
+    }
+  ],
+  "expected_actions": [
+    "acknowledge",
+    "investigate",
+    "contain",
+    "block_ip"
+  ],
+  "hints": [
+    "MITRE Tekniği: T1027",
+    "Taktik: TA0005",
+    "Olay zaman çizelgesini inceleyin",
+    "Kaynak IP'leri engellemeyi değerlendirin"
+  ],
+  "scoring": {
+    "detect_alert_bonus": 10,
+    "investigate_bonus": 8,
+    "contain_bonus": 12,
+    "speed_bonus_threshold_secs": 300
+  }
+}

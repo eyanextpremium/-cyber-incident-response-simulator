@@ -1,0 +1,78 @@
+{
+  "id": "mitre-reconnaissance-01",
+  "name": "Aktif Tarama — Port Keşfi",
+  "difficulty": "beginner",
+  "category": "reconnaissance",
+  "mitre_tactic": "TA0043",
+  "mitre_tactic_name": "Reconnaissance",
+  "description": "Saldırgan hedef ağda aktif port taraması yapıyor.",
+  "objective": "Bu Aktif Tarama — Port Keşfi senaryosunda saldırıyı tespit edin, MITRE tekniği T1595.001 ile ilişkilendirin ve müdahale edin.",
+  "time_limit_secs": 1800,
+  "scenario_type": "active_scanning",
+  "target_hosts": [
+    "web-prod-01",
+    "dc-server-01",
+    "file-server-01"
+  ],
+  "attacker_ips": [
+    "185.234.218.42",
+    "45.142.212.100",
+    "103.219.189.55"
+  ],
+  "events": [
+    {
+      "offset_secs": 5,
+      "source": "firewall",
+      "event_type": "scan_detected",
+      "message": "Port scan detected from 185.234.218.42 targeting 10.0.1.0/24 — 65535 ports in 30s",
+      "host": "firewall-01",
+      "source_ip": "185.234.218.42",
+      "destination_ip": null,
+      "user": null,
+      "is_malicious": true,
+      "mitre_technique": "T1595.001"
+    },
+    {
+      "offset_secs": 15,
+      "source": "ids",
+      "event_type": "recon_alert",
+      "message": "Nmap SYN scan signature detected from 185.234.218.42",
+      "host": "firewall-01",
+      "source_ip": "185.234.218.42",
+      "destination_ip": null,
+      "user": null,
+      "is_malicious": true,
+      "mitre_technique": "T1595.001"
+    },
+    {
+      "offset_secs": 30,
+      "source": "network",
+      "event_type": "connection_attempt",
+      "message": "Multiple SYN packets to ports 22,80,443,3389 from 185.234.218.42",
+      "host": "web-prod-01",
+      "source_ip": "185.234.218.42",
+      "destination_ip": null,
+      "user": null,
+      "is_malicious": true,
+      "mitre_technique": "T1595.001"
+    }
+  ],
+  "expected_actions": [
+    "acknowledge",
+    "investigate",
+    "contain",
+    "block_ip"
+  ],
+  "hints": [
+    "MITRE Tekniği: T1595.001",
+    "Taktik: TA0043",
+    "Olay zaman çizelgesini inceleyin",
+    "Kaynak IP'leri engellemeyi değerlendirin"
+  ],
+  "scoring": {
+    "detect_alert_bonus": 10,
+    "investigate_bonus": 8,
+    "contain_bonus": 12,
+    "speed_bonus_threshold_secs": 300
+  }
+}

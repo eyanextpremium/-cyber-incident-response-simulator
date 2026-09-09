@@ -1,0 +1,68 @@
+{
+  "id": "advanced-web-attack-01",
+  "name": "Advanced Web Application Attack",
+  "difficulty": "advanced",
+  "category": "web_attack",
+  "description": "A sophisticated attacker is exploiting a SQL injection vulnerability in the web application to extract database contents, then uses a web shell for persistence and pivots into the internal network.",
+  "objective": "Detect the SQL injection attack, identify the web shell, remove persistent access, and assess database compromise.",
+  "time_limit_secs": 3500,
+  "scenario_type": "web_attack",
+  "target_hosts": ["web-app-01", "db-server-01"],
+  "attacker_ips": ["45.33.32.156"],
+  "events": [
+    {
+      "offset_secs": 8,
+      "source": "web_server",
+      "event_type": "sql_injection",
+      "message": "SQL injection detected: GET /api/users?id=1+UNION+SELECT+username,password+FROM+admin_users-- HTTP/1.1 from 45.33.32.156",
+      "host": "web-app-01",
+      "source_ip": "45.33.32.156",
+      "user": "anonymous",
+      "is_malicious": true,
+      "mitre_technique": "T1190"
+    },
+    {
+      "offset_secs": 22,
+      "source": "web_server",
+      "event_type": "web_shell_upload",
+      "message": "Malicious file upload: /uploads/image_2024.php (PHP web shell) uploaded via POST /api/upload",
+      "host": "web-app-01",
+      "source_ip": "45.33.32.156",
+      "is_malicious": true,
+      "mitre_technique": "T1505.003"
+    },
+    {
+      "offset_secs": 35,
+      "source": "web_server",
+      "event_type": "web_shell_exec",
+      "message": "Web shell executed: GET /uploads/image_2024.php?cmd=cat+/etc/passwd from 45.33.32.156",
+      "host": "web-app-01",
+      "source_ip": "45.33.32.156",
+      "is_malicious": true,
+      "mitre_technique": "T1059.004"
+    },
+    {
+      "offset_secs": 50,
+      "source": "network",
+      "event_type": "internal_pivot",
+      "message": "Pivot attempt: web-app-01 (10.0.2.10) scanning internal subnet 10.0.1.0/24 via web shell",
+      "host": "web-app-01",
+      "source_ip": "10.0.2.10",
+      "is_malicious": true,
+      "mitre_technique": "T1046"
+    }
+  ],
+  "expected_actions": ["acknowledge", "investigate", "quarantine_file", "isolate_host", "contain", "eradicate"],
+  "hints": [
+    "SQL injection with UNION SELECT is trying to extract data from other tables",
+    "Web shell uploads create persistent access — find and remove the file",
+    "Web shells can be used to pivot into internal networks",
+    "Check the uploads directory for any PHP or executable files"
+  ],
+  "scoring": {
+    "detect_alert_bonus": 12,
+    "investigate_bonus": 13,
+    "contain_bonus": 15,
+    "speed_bonus_threshold_secs": 700
+  }
+}

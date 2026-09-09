@@ -1,0 +1,69 @@
+{
+  "id": "advanced-data-exfil-01",
+  "name": "Sensitive Data Exfiltration",
+  "difficulty": "advanced",
+  "category": "exfiltration",
+  "description": "A threat actor with established persistence is staging and exfiltrating sensitive customer data using DNS tunneling and HTTPS to evade detection. The attacker has access to the database server.",
+  "objective": "Detect the data exfiltration channels, identify what data was accessed, block the exfiltration, and assess the scope of the breach.",
+  "time_limit_secs": 4000,
+  "scenario_type": "data_exfiltration",
+  "target_hosts": ["db-server-01", "web-app-01"],
+  "attacker_ips": ["198.51.100.77", "203.0.113.88"],
+  "events": [
+    {
+      "offset_secs": 10,
+      "source": "endpoint",
+      "event_type": "db_query",
+      "message": "Unusual bulk SELECT query: SELECT * FROM customers LIMIT 100000 executed by app_service_account at 02:15 AM",
+      "host": "db-server-01",
+      "user": "app_service_account",
+      "is_malicious": true,
+      "mitre_technique": "T1530"
+    },
+    {
+      "offset_secs": 25,
+      "source": "dns",
+      "event_type": "dns_tunnel",
+      "message": "DNS tunneling detected: unusually large TXT record queries to exfil.attacker-c2.com (encoding binary data in DNS)",
+      "host": "db-server-01",
+      "destination_ip": "198.51.100.77",
+      "is_malicious": true,
+      "mitre_technique": "T1048.003"
+    },
+    {
+      "offset_secs": 40,
+      "source": "firewall",
+      "event_type": "large_upload",
+      "message": "Large outbound upload: db-server-01 -> 203.0.113.88:443 - 2.3GB transferred in 15 minutes",
+      "host": "db-server-01",
+      "source_ip": "10.0.1.50",
+      "destination_ip": "203.0.113.88",
+      "is_malicious": true,
+      "mitre_technique": "T1048"
+    },
+    {
+      "offset_secs": 60,
+      "source": "network",
+      "event_type": "c2_communication",
+      "message": "C2 check-in: db-server-01 beaconing to 203.0.113.88 every 60 seconds (periodic interval suggests automated tool)",
+      "host": "db-server-01",
+      "source_ip": "10.0.1.50",
+      "destination_ip": "203.0.113.88",
+      "is_malicious": true,
+      "mitre_technique": "T1071.004"
+    }
+  ],
+  "expected_actions": ["acknowledge", "investigate", "block_ip", "contain", "eradicate"],
+  "hints": [
+    "Bulk database queries at unusual hours are a major red flag",
+    "DNS tunneling uses TXT records to encode and transmit stolen data",
+    "Check both DNS and firewall logs for exfiltration channels",
+    "Block the C2 IP at the firewall to stop ongoing exfiltration"
+  ],
+  "scoring": {
+    "detect_alert_bonus": 12,
+    "investigate_bonus": 13,
+    "contain_bonus": 15,
+    "speed_bonus_threshold_secs": 800
+  }
+}

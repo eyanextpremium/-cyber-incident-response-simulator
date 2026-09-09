@@ -1,0 +1,89 @@
+[[rules]]
+id = "brute-force"
+name = "Brute Force Detection"
+description = "Multiple failed authentication attempts detected from single source"
+severity = "high"
+pattern = "(?i)failed.*(login|auth|password|authentication)"
+source = "authentication"
+enabled = true
+
+[[rules]]
+id = "malware-exec"
+name = "Suspicious Process Execution"
+description = "Known malicious process command patterns detected"
+severity = "critical"
+pattern = "(?i)(powershell.*-enc|-nop|-noni|cmd\\.exe.*\\/c|wscript\\.exe|cscript\\.exe|mshta\\.exe)"
+source = "endpoint"
+enabled = true
+
+[[rules]]
+id = "lateral-movement"
+name = "Lateral Movement Detected"
+description = "Internal network scanning or SMB/RDP lateral movement activity"
+severity = "high"
+pattern = "(?i)(smb|psexec|wmiexec|wmi.*connect|rdp.*connect|net use|pass-the-hash)"
+source = "network"
+enabled = true
+
+[[rules]]
+id = "data-exfil"
+name = "Data Exfiltration Attempt"
+description = "Large outbound data transfer or DNS tunneling detected"
+severity = "critical"
+pattern = "(?i)(upload|exfil|large.*transfer|dns.*tunnel|base64.*upload|ftp.*outbound)"
+source = "firewall"
+enabled = true
+
+[[rules]]
+id = "phishing"
+name = "Phishing Email Detected"
+description = "Suspicious email with malicious link or attachment"
+severity = "medium"
+pattern = "(?i)(phish|malicious.*link|credential.*harvest|suspicious.*attachment|macro.*enabled)"
+source = "email"
+enabled = true
+
+[[rules]]
+id = "ransomware"
+name = "Ransomware Activity"
+description = "File encryption or ransomware execution patterns detected"
+severity = "critical"
+pattern = "(?i)(vssadmin.*delete|shadow.*copy|encrypt.*files|\\.locked|\\.crypt|ransom.*note|readme.*decrypt)"
+source = "endpoint"
+enabled = true
+
+[[rules]]
+id = "privilege-escalation"
+name = "Privilege Escalation"
+description = "Attempts to escalate privileges beyond normal scope"
+severity = "high"
+pattern = "(?i)(sudo|runas.*admin|token.*impersonation|seimpersonateprivilege|bypass.*uac|mimikatz)"
+source = "endpoint"
+enabled = true
+
+[[rules]]
+id = "credential-theft"
+name = "Credential Theft"
+description = "Credential dumping or theft attempt"
+severity = "critical"
+pattern = "(?i)(lsass|credential.*dump|sekurlsa|hashdump|password.*hash|ntds\\.dit|sam.*database)"
+source = "endpoint"
+enabled = true
+
+[[rules]]
+id = "c2-beacon"
+name = "Command and Control Beacon"
+description = "Periodic outbound connections suggesting C2 communication"
+severity = "high"
+pattern = "(?i)(beacon|c2.*connect|command.*control|reverse.*shell|cobalt.*strike|empire.*agent)"
+source = "network"
+enabled = true
+
+[[rules]]
+id = "web-attack"
+name = "Web Application Attack"
+description = "SQL injection, XSS, or directory traversal detected"
+severity = "high"
+pattern = "(?i)(sql.*inject|union.*select|xss|<script|../../../|etc/passwd|directory.*traversal)"
+source = "web_server"
+enabled = true

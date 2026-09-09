@@ -1,0 +1,67 @@
+{
+  "id": "intermediate-priv-esc-01",
+  "name": "Local Privilege Escalation",
+  "difficulty": "intermediate",
+  "category": "privilege_escalation",
+  "description": "A low-privileged attacker has gained initial access and is attempting to escalate privileges to SYSTEM on a Windows workstation using a known vulnerability and token manipulation techniques.",
+  "objective": "Detect the privilege escalation attempt, identify the method used, and contain the threat before the attacker achieves SYSTEM-level access.",
+  "time_limit_secs": 2200,
+  "scenario_type": "privilege_escalation",
+  "target_hosts": ["workstation-DEV-07"],
+  "attacker_ips": ["10.0.3.77"],
+  "events": [
+    {
+      "offset_secs": 8,
+      "source": "endpoint",
+      "event_type": "process_execution",
+      "message": "Process executed: whoami /priv - checking available privileges for user devuser01",
+      "host": "workstation-DEV-07",
+      "user": "devuser01",
+      "is_malicious": true,
+      "mitre_technique": "T1069"
+    },
+    {
+      "offset_secs": 18,
+      "source": "endpoint",
+      "event_type": "token_manipulation",
+      "message": "SeImpersonatePrivilege token manipulation detected - JuicyPotato-like exploit attempt",
+      "host": "workstation-DEV-07",
+      "user": "devuser01",
+      "is_malicious": true,
+      "mitre_technique": "T1134.001"
+    },
+    {
+      "offset_secs": 28,
+      "source": "endpoint",
+      "event_type": "privilege_escalated",
+      "message": "Process created with SYSTEM privileges by devuser01 - successful privilege escalation",
+      "host": "workstation-DEV-07",
+      "user": "SYSTEM",
+      "is_malicious": true,
+      "mitre_technique": "T1068"
+    },
+    {
+      "offset_secs": 40,
+      "source": "endpoint",
+      "event_type": "user_created",
+      "message": "New local administrator account created: backdoor_admin (SYSTEM context)",
+      "host": "workstation-DEV-07",
+      "user": "SYSTEM",
+      "is_malicious": true,
+      "mitre_technique": "T1136.001"
+    }
+  ],
+  "expected_actions": ["acknowledge", "investigate", "isolate_host", "disable_account", "eradicate"],
+  "hints": [
+    "SeImpersonatePrivilege is commonly abused for privilege escalation on Windows",
+    "Monitor for processes that spawn children with higher privileges than the parent",
+    "New administrator accounts created by SYSTEM are a serious red flag",
+    "Isolate the host and disable the backdoor account immediately"
+  ],
+  "scoring": {
+    "detect_alert_bonus": 10,
+    "investigate_bonus": 10,
+    "contain_bonus": 15,
+    "speed_bonus_threshold_secs": 450
+  }
+}

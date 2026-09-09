@@ -1,0 +1,80 @@
+{
+  "id": "expert-apt-simulation-01",
+  "name": "Nation-State APT Campaign",
+  "difficulty": "expert",
+  "category": "apt",
+  "description": "A sophisticated nation-state APT group has been conducting a long-term intrusion campaign. They have established multiple persistence mechanisms, created backdoor accounts, and are conducting stealthy data collection. Living-off-the-land techniques make detection very difficult.",
+  "objective": "Identify and eradicate all APT footholds including backdoors, persistence mechanisms, and data collection staging areas. Assess the full scope of compromise.",
+  "time_limit_secs": 7200,
+  "scenario_type": "apt_simulation",
+  "target_hosts": ["dc-server-01", "file-server-01", "mail-server-01", "workstation-EXEC-01"],
+  "attacker_ips": ["45.142.212.200", "192.168.100.5"],
+  "events": [
+    {
+      "offset_secs": 5,
+      "source": "authentication",
+      "event_type": "service_account_login",
+      "message": "Service account svc_backup logged in interactively on dc-server-01 at 03:22 AM — anomalous behavior",
+      "host": "dc-server-01",
+      "user": "svc_backup",
+      "source_ip": "192.168.100.5",
+      "is_malicious": true,
+      "mitre_technique": "T1078.002"
+    },
+    {
+      "offset_secs": 20,
+      "source": "endpoint",
+      "event_type": "scheduled_task",
+      "message": "Scheduled task created: WindowsUpdateHelper runs C:\\Windows\\System32\\upd_helper.exe daily at 4AM (SYSTEM)",
+      "host": "dc-server-01",
+      "user": "SYSTEM",
+      "is_malicious": true,
+      "mitre_technique": "T1053.005"
+    },
+    {
+      "offset_secs": 40,
+      "source": "endpoint",
+      "event_type": "dll_sideload",
+      "message": "DLL sideloading: legitimate winword.exe loading malicious version.dll from user profile directory",
+      "host": "workstation-EXEC-01",
+      "user": "ceo_account",
+      "is_malicious": true,
+      "mitre_technique": "T1574.002"
+    },
+    {
+      "offset_secs": 65,
+      "source": "network",
+      "event_type": "c2_beacon",
+      "message": "Low-frequency C2 beacon: dc-server-01 -> 45.142.212.200:443 every 3600 seconds (living-off-the-land using certutil)",
+      "host": "dc-server-01",
+      "source_ip": "10.0.1.5",
+      "destination_ip": "45.142.212.200",
+      "is_malicious": true,
+      "mitre_technique": "T1105"
+    },
+    {
+      "offset_secs": 90,
+      "source": "endpoint",
+      "event_type": "data_staging",
+      "message": "Data staged for exfiltration: compressed archive created at C:\\Windows\\Temp\\update_cache.zip (2.1GB)",
+      "host": "file-server-01",
+      "user": "svc_backup",
+      "is_malicious": true,
+      "mitre_technique": "T1074.001"
+    }
+  ],
+  "expected_actions": ["acknowledge", "investigate", "disable_account", "isolate_host", "quarantine_file", "eradicate", "recover"],
+  "hints": [
+    "APT actors often use service accounts to blend in with normal traffic",
+    "Scheduled tasks and DLL sideloading provide persistent access across reboots",
+    "Low-frequency beacons are harder to detect — look for periodic connections",
+    "Check all hosts for staged data and unauthorized scheduled tasks",
+    "Assume multiple persistence mechanisms — find them all before declaring victory"
+  ],
+  "scoring": {
+    "detect_alert_bonus": 20,
+    "investigate_bonus": 15,
+    "contain_bonus": 15,
+    "speed_bonus_threshold_secs": 1800
+  }
+}

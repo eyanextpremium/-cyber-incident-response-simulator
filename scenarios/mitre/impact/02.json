@@ -1,0 +1,66 @@
+{
+  "id": "mitre-impact-02",
+  "name": "Kurtarma Engelleme — Shadow Copy",
+  "difficulty": "advanced",
+  "category": "impact",
+  "mitre_tactic": "TA0040",
+  "mitre_tactic_name": "Impact",
+  "description": "Saldırgan shadow copy ve backup'ları siliyor.",
+  "objective": "Bu Kurtarma Engelleme — Shadow Copy senaryosunda saldırıyı tespit edin, MITRE tekniği T1490 ile ilişkilendirin ve müdahale edin.",
+  "time_limit_secs": 1800,
+  "scenario_type": "inhibit_recovery",
+  "target_hosts": [
+    "web-prod-01",
+    "dc-server-01",
+    "file-server-01"
+  ],
+  "attacker_ips": [
+    "185.234.218.42",
+    "45.142.212.100",
+    "103.219.189.55"
+  ],
+  "events": [
+    {
+      "offset_secs": 8,
+      "source": "endpoint",
+      "event_type": "recovery_inhibit",
+      "message": "vssadmin delete shadows /all /quiet executed on backup-server-01",
+      "host": "backup-server-01",
+      "source_ip": null,
+      "destination_ip": null,
+      "user": null,
+      "is_malicious": true,
+      "mitre_technique": "T1490"
+    },
+    {
+      "offset_secs": 15,
+      "source": "endpoint",
+      "event_type": "recovery_inhibit",
+      "message": "wbadmin delete catalog -quiet executed",
+      "host": "backup-server-01",
+      "source_ip": null,
+      "destination_ip": null,
+      "user": null,
+      "is_malicious": true,
+      "mitre_technique": "T1490"
+    }
+  ],
+  "expected_actions": [
+    "acknowledge",
+    "investigate",
+    "contain",
+    "block_ip"
+  ],
+  "hints": [
+    "MITRE Tekniği: T1490",
+    "Taktik: TA0040",
+    "Olay zaman çizelgesini inceleyin",
+    "Kaynak IP'leri engellemeyi değerlendirin"
+  ],
+  "scoring": {
+    "detect_alert_bonus": 10,
+    "investigate_bonus": 8,
+    "contain_bonus": 12,
+    "speed_bonus_threshold_secs": 300
+  }
+}

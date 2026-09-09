@@ -1,0 +1,66 @@
+{
+  "id": "mitre-initial_access-01",
+  "name": "Oltalama — Sahte E-posta",
+  "difficulty": "beginner",
+  "category": "initial_access",
+  "mitre_tactic": "TA0001",
+  "mitre_tactic_name": "Initial Access",
+  "description": "Saldırgan sahte IT destek e-postası ile kimlik bilgisi çalıyor.",
+  "objective": "Bu Oltalama — Sahte E-posta senaryosunda saldırıyı tespit edin, MITRE tekniği T1566.001 ile ilişkilendirin ve müdahale edin.",
+  "time_limit_secs": 1800,
+  "scenario_type": "phishing",
+  "target_hosts": [
+    "web-prod-01",
+    "dc-server-01",
+    "file-server-01"
+  ],
+  "attacker_ips": [
+    "185.234.218.42",
+    "45.142.212.100",
+    "103.219.189.55"
+  ],
+  "events": [
+    {
+      "offset_secs": 10,
+      "source": "email",
+      "event_type": "phishing_email",
+      "message": "Suspicious email from it-support@targetcorp-login.com with credential harvest link",
+      "host": "mail-server-01",
+      "source_ip": "185.234.218.42",
+      "destination_ip": null,
+      "user": "jsmith",
+      "is_malicious": true,
+      "mitre_technique": "T1566.001"
+    },
+    {
+      "offset_secs": 45,
+      "source": "authentication",
+      "event_type": "login_success",
+      "message": "User jsmith logged in from unusual location 185.234.218.42",
+      "host": "web-prod-01",
+      "source_ip": "185.234.218.42",
+      "destination_ip": null,
+      "user": "jsmith",
+      "is_malicious": true,
+      "mitre_technique": "T1566.001"
+    }
+  ],
+  "expected_actions": [
+    "acknowledge",
+    "investigate",
+    "contain",
+    "block_ip"
+  ],
+  "hints": [
+    "MITRE Tekniği: T1566.001",
+    "Taktik: TA0001",
+    "Olay zaman çizelgesini inceleyin",
+    "Kaynak IP'leri engellemeyi değerlendirin"
+  ],
+  "scoring": {
+    "detect_alert_bonus": 10,
+    "investigate_bonus": 8,
+    "contain_bonus": 12,
+    "speed_bonus_threshold_secs": 300
+  }
+}

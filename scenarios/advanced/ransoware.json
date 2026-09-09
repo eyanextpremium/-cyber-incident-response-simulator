@@ -1,0 +1,77 @@
+{
+  "id": "advanced-ransomware-01",
+  "name": "Enterprise Ransomware Attack",
+  "difficulty": "advanced",
+  "category": "ransomware",
+  "description": "A sophisticated ransomware operator has breached the network, performed reconnaissance, escalated privileges, and is now deploying ransomware across multiple systems. Shadow copies are being deleted and files are being encrypted.",
+  "objective": "Detect and stop the ransomware deployment, preserve backups, isolate infected systems, and begin recovery procedures.",
+  "time_limit_secs": 3600,
+  "scenario_type": "ransomware",
+  "target_hosts": ["file-server-01", "workstation-FIN-01", "workstation-FIN-02", "backup-server-01"],
+  "attacker_ips": ["192.168.50.100", "10.0.1.99"],
+  "events": [
+    {
+      "offset_secs": 5,
+      "source": "endpoint",
+      "event_type": "process_execution",
+      "message": "vssadmin.exe Delete Shadows /All /Quiet executed by SYSTEM - deleting volume shadow copies",
+      "host": "file-server-01",
+      "user": "SYSTEM",
+      "is_malicious": true,
+      "mitre_technique": "T1490"
+    },
+    {
+      "offset_secs": 15,
+      "source": "endpoint",
+      "event_type": "file_modification",
+      "message": "Mass file encryption detected: 847 files renamed with .locked extension in D:\\Finance\\ in 10 seconds",
+      "host": "file-server-01",
+      "user": "SYSTEM",
+      "is_malicious": true,
+      "mitre_technique": "T1486"
+    },
+    {
+      "offset_secs": 20,
+      "source": "endpoint",
+      "event_type": "file_created",
+      "message": "Ransom note created: D:\\Finance\\README_DECRYPT.txt - contains payment instructions",
+      "host": "file-server-01",
+      "user": "SYSTEM",
+      "is_malicious": true,
+      "mitre_technique": "T1486"
+    },
+    {
+      "offset_secs": 30,
+      "source": "network",
+      "event_type": "lateral_spread",
+      "message": "Ransomware propagating via SMB: file-server-01 -> workstation-FIN-01, workstation-FIN-02",
+      "host": "workstation-FIN-01",
+      "source_ip": "10.0.1.20",
+      "is_malicious": true,
+      "mitre_technique": "T1570"
+    },
+    {
+      "offset_secs": 45,
+      "source": "endpoint",
+      "event_type": "backup_access",
+      "message": "Backup server backup-server-01 accessed from infected host - attempting to encrypt backups",
+      "host": "backup-server-01",
+      "source_ip": "10.0.1.20",
+      "is_malicious": true,
+      "mitre_technique": "T1490"
+    }
+  ],
+  "expected_actions": ["acknowledge", "investigate", "isolate_host", "contain", "eradicate", "recover"],
+  "hints": [
+    "vssadmin deleting shadow copies is a ransomware precursor — act immediately",
+    "Isolate affected systems from the network before ransomware spreads further",
+    "Protect the backup server at all costs — it's needed for recovery",
+    "Check if the backup server has been compromised before initiating restore"
+  ],
+  "scoring": {
+    "detect_alert_bonus": 15,
+    "investigate_bonus": 10,
+    "contain_bonus": 15,
+    "speed_bonus_threshold_secs": 300
+  }
+}

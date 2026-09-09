@@ -1,0 +1,54 @@
+{
+  "id": "mitre-lateral_movement-04",
+  "name": "Paylaşımlı İçerik — Web Shell",
+  "difficulty": "advanced",
+  "category": "lateral_movement",
+  "mitre_tactic": "TA0008",
+  "mitre_tactic_name": "Lateral Movement",
+  "description": "Saldırgan paylaşılan web dizinine web shell bırakıyor.",
+  "objective": "Bu Paylaşımlı İçerik — Web Shell senaryosunda saldırıyı tespit edin, MITRE tekniği T1080 ile ilişkilendirin ve müdahale edin.",
+  "time_limit_secs": 1800,
+  "scenario_type": "taint_shared",
+  "target_hosts": [
+    "web-prod-01",
+    "dc-server-01",
+    "file-server-01"
+  ],
+  "attacker_ips": [
+    "185.234.218.42",
+    "45.142.212.100",
+    "103.219.189.55"
+  ],
+  "events": [
+    {
+      "offset_secs": 10,
+      "source": "web",
+      "event_type": "webshell",
+      "message": "PHP webshell uploaded to shared web directory /var/www/shared/",
+      "host": "web-prod-01",
+      "source_ip": "10.0.2.15",
+      "destination_ip": null,
+      "user": null,
+      "is_malicious": true,
+      "mitre_technique": "T1080"
+    }
+  ],
+  "expected_actions": [
+    "acknowledge",
+    "investigate",
+    "contain",
+    "block_ip"
+  ],
+  "hints": [
+    "MITRE Tekniği: T1080",
+    "Taktik: TA0008",
+    "Olay zaman çizelgesini inceleyin",
+    "Kaynak IP'leri engellemeyi değerlendirin"
+  ],
+  "scoring": {
+    "detect_alert_bonus": 10,
+    "investigate_bonus": 8,
+    "contain_bonus": 12,
+    "speed_bonus_threshold_secs": 300
+  }
+}

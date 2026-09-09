@@ -1,0 +1,54 @@
+{
+  "id": "mitre-lateral_movement-02",
+  "name": "Pass-the-Ticket — Kerberos",
+  "difficulty": "expert",
+  "category": "lateral_movement",
+  "mitre_tactic": "TA0008",
+  "mitre_tactic_name": "Lateral Movement",
+  "description": "Saldırgan çalınmış Kerberos ticket ile lateral movement yapıyor.",
+  "objective": "Bu Pass-the-Ticket — Kerberos senaryosunda saldırıyı tespit edin, MITRE tekniği T1550.003 ile ilişkilendirin ve müdahale edin.",
+  "time_limit_secs": 1800,
+  "scenario_type": "pass_the_ticket",
+  "target_hosts": [
+    "web-prod-01",
+    "dc-server-01",
+    "file-server-01"
+  ],
+  "attacker_ips": [
+    "185.234.218.42",
+    "45.142.212.100",
+    "103.219.189.55"
+  ],
+  "events": [
+    {
+      "offset_secs": 12,
+      "source": "authentication",
+      "event_type": "kerberos_anomaly",
+      "message": "Kerberos TGT used from two different hosts simultaneously for admin account",
+      "host": "dc-server-01",
+      "source_ip": "10.0.2.21",
+      "destination_ip": null,
+      "user": "admin",
+      "is_malicious": true,
+      "mitre_technique": "T1550.003"
+    }
+  ],
+  "expected_actions": [
+    "acknowledge",
+    "investigate",
+    "contain",
+    "block_ip"
+  ],
+  "hints": [
+    "MITRE Tekniği: T1550.003",
+    "Taktik: TA0008",
+    "Olay zaman çizelgesini inceleyin",
+    "Kaynak IP'leri engellemeyi değerlendirin"
+  ],
+  "scoring": {
+    "detect_alert_bonus": 10,
+    "investigate_bonus": 8,
+    "contain_bonus": 12,
+    "speed_bonus_threshold_secs": 300
+  }
+}

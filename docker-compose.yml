@@ -1,0 +1,31 @@
+services:
+  simulator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cyber-incident-simulator
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+      - "5140:5140/udp"
+    environment:
+      - RUST_LOG=info
+      - SERVER_HOST=0.0.0.0
+      - SERVER_PORT=8080
+      - STATIC_DIR=fronted
+      - ADMIN_USERNAME=${ADMIN_USERNAME:-admin}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-change_admin_password_immediately}
+      - TOKEN_SECRET=${TOKEN_SECRET:-af55a1cas4f51ac15f5ac}
+      - API_KEY=${API_KEY:-ST25NIDJb234vs}
+      - ALLOWED_ORIGIN=${ALLOWED_ORIGIN:-http://127.0.0.1:8080}
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./config:/app/config:ro
+      - ./scenarios:/app/scenarios:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:8080/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s

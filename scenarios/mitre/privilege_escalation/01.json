@@ -1,0 +1,66 @@
+{
+  "id": "mitre-privilege_escalation-01",
+  "name": "Yerel Ayrıcalık Sömürüsü — CVE",
+  "difficulty": "advanced",
+  "category": "privilege_escalation",
+  "mitre_tactic": "TA0004",
+  "mitre_tactic_name": "Privilege Escalation",
+  "description": "Saldırgan bilinen CVE ile SYSTEM yetkisi elde ediyor.",
+  "objective": "Bu Yerel Ayrıcalık Sömürüsü — CVE senaryosunda saldırıyı tespit edin, MITRE tekniği T1068 ile ilişkilendirin ve müdahale edin.",
+  "time_limit_secs": 1800,
+  "scenario_type": "local_exploit",
+  "target_hosts": [
+    "web-prod-01",
+    "dc-server-01",
+    "file-server-01"
+  ],
+  "attacker_ips": [
+    "185.234.218.42",
+    "45.142.212.100",
+    "103.219.189.55"
+  ],
+  "events": [
+    {
+      "offset_secs": 10,
+      "source": "endpoint",
+      "event_type": "exploit_attempt",
+      "message": "Exploit attempt detected: PrintNightmare (CVE-2021-34527) on workstation-ENG-12",
+      "host": "workstation-ENG-12",
+      "source_ip": null,
+      "destination_ip": null,
+      "user": null,
+      "is_malicious": true,
+      "mitre_technique": "T1068"
+    },
+    {
+      "offset_secs": 22,
+      "source": "endpoint",
+      "event_type": "privilege_change",
+      "message": "Process escalated from user devuser to NT AUTHORITY\\SYSTEM",
+      "host": "workstation-ENG-12",
+      "source_ip": null,
+      "destination_ip": null,
+      "user": "devuser",
+      "is_malicious": true,
+      "mitre_technique": "T1068"
+    }
+  ],
+  "expected_actions": [
+    "acknowledge",
+    "investigate",
+    "contain",
+    "block_ip"
+  ],
+  "hints": [
+    "MITRE Tekniği: T1068",
+    "Taktik: TA0004",
+    "Olay zaman çizelgesini inceleyin",
+    "Kaynak IP'leri engellemeyi değerlendirin"
+  ],
+  "scoring": {
+    "detect_alert_bonus": 10,
+    "investigate_bonus": 8,
+    "contain_bonus": 12,
+    "speed_bonus_threshold_secs": 300
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "id": "mitre-execution-04",
+  "name": "Zamanlanmış Görev — Persistence Exec",
+  "difficulty": "advanced",
+  "category": "execution",
+  "mitre_tactic": "TA0002",
+  "mitre_tactic_name": "Execution",
+  "description": "Saldırgan schtasks ile kalıcı görev oluşturup kod çalıştırıyor.",
+  "objective": "Bu Zamanlanmış Görev — Persistence Exec senaryosunda saldırıyı tespit edin, MITRE tekniği T1053.005 ile ilişkilendirin ve müdahale edin.",
+  "time_limit_secs": 1800,
+  "scenario_type": "scheduled_task",
+  "target_hosts": [
+    "web-prod-01",
+    "dc-server-01",
+    "file-server-01"
+  ],
+  "attacker_ips": [
+    "185.234.218.42",
+    "45.142.212.100",
+    "103.219.189.55"
+  ],
+  "events": [
+    {
+      "offset_secs": 10,
+      "source": "endpoint",
+      "event_type": "task_created",
+      "message": "Scheduled task 'WindowsUpdateCheck' created to run C:\\Users\\Public\\update.exe daily",
+      "host": "workstation-ENG-12",
+      "source_ip": null,
+      "destination_ip": null,
+      "user": "devuser",
+      "is_malicious": true,
+      "mitre_technique": "T1053.005"
+    },
+    {
+      "offset_secs": 22,
+      "source": "endpoint",
+      "event_type": "process_create",
+      "message": "update.exe executed via scheduled task WindowsUpdateCheck",
+      "host": "workstation-ENG-12",
+      "source_ip": null,
+      "destination_ip": null,
+      "user": null,
+      "is_malicious": true,
+      "mitre_technique": "T1053.005"
+    }
+  ],
+  "expected_actions": [
+    "acknowledge",
+    "investigate",
+    "contain",
+    "block_ip"
+  ],
+  "hints": [
+    "MITRE Tekniği: T1053.005",
+    "Taktik: TA0002",
+    "Olay zaman çizelgesini inceleyin",
+    "Kaynak IP'leri engellemeyi değerlendirin"
+  ],
+  "scoring": {
+    "detect_alert_bonus": 10,
+    "investigate_bonus": 8,
+    "contain_bonus": 12,
+    "speed_bonus_threshold_secs": 300
+  }
+}
